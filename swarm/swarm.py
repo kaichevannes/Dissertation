@@ -1,10 +1,28 @@
 from entity_factory.entity_factory import EntityFactory
+from entity.entity import Entity
 import matplotlib.pyplot as plt
 import numpy as np
 
 
 class Swarm:
     """A swarm of entities."""
+
+    def __init__(
+        self,
+        swarm_size: int,
+        entity_factory: EntityFactory,
+        entities: list[Entity] = None,
+    ) -> None:
+        """
+        Args:
+            swarm_size (int): the number of entities in the swarm
+            entity_factory (EntityFactory): the factory used to create the swarm entities
+            entities (Entity): a pre-instantiated list of entities to start the swarm with
+        """
+        if entities is None:
+            self.swarm_size = swarm_size
+            self.entity_factory = entity_factory
+        self.entities = entities
 
     def __str__(self) -> str:
         """Convert this swarm into a human-readable string.
@@ -26,35 +44,29 @@ class Swarm:
 
         return full_string
 
-    def __init__(self, swarm_size: int, entity_factory: EntityFactory) -> None:
-        """
-        Args:
-            swarm_size (int): the number of entities in the swarm
-            entity_factory (EntityFactory): the factory used to create the swarm entities
-        """
-        self.swarm_size = swarm_size
-        self.entity_factory = entity_factory
-        self.entities = None
-
-    # def __init__(
-    #     self, swarm_size: int, entity_factory: EntityFactory, axes: plt.axes
-    # ) -> None:
-    #     """
-    #     Args:
-    #         swarm_size (int): the number of entities in the swarm
-    #         entity_factory (EntityFactory): the factory used to create the swarm entities
-    #         axis (plt.axes): the plot to show the simulation on
-    #     """
-    #     self.swarm_size = swarm_size
-    #     self.entity_factory = entity_factory
-    #     self.entities = None
-    #     self.axes = axes
-
     def generate_entities(self) -> None:
         """Generate a new swarm based on the initialisation parameters."""
+        if self.swarm_size < 0:
+            raise ValueError("Swarm size must be non-negative.")
         self.entities = [
             self.entity_factory.create_entity() for _ in range(self.swarm_size)
         ]
+
+    def calculate_visceks_order_parameter(self) -> float:
+        """Calculate the Visceks order parameter at this time step.
+
+        Returns:
+            float: the Visceks order parameter at this time step
+        """
+        total_normalised_velocity = np.array([0, 0])
+        for entity in self.entities:
+            normalised_velocity = entity.velocity / np.linalg.norm(entity.velocity)
+            total_normalised_velocity = np.add(
+                total_normalised_velocity,
+                normalised_velocity,
+            )
+
+        return np.linalg.norm(total_normalised_velocity) / len(self.entities)
 
     def step(self) -> None:
         """Update by one time step."""
@@ -63,13 +75,12 @@ class Swarm:
 
     def initialise_plot(self, ax: plt.Axes) -> None:
         self.step()
-        x_positions = [entity.position[0] for entity in self.entities]
-        y_positions = [entity.position[1] for entity in self.entities]
-        self.sc = ax.scatter(x_positions, y_positions)
+        print(self)
+        positions = np.array([entity.position for entity in self.entities])
+        self.sc = ax.scatter(positions[:, 0], positions[:, 1])
 
     def plot(self, ax: plt.Axes) -> None:
         self.step()
         print(self)
-        x_positions = [entity.position[0] for entity in self.entities]
-        y_positions = [entity.position[1] for entity in self.entities]
-        self.sc.set_offsets(np.c_[x_positions, y_positions])
+        positions = np.array([entity.position for entity in self.entities])
+        self.sc.set_offsets(np.c_[positions[:, 0], positions[:, 1]])

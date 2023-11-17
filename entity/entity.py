@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 import numpy as np
 
@@ -6,26 +5,8 @@ if TYPE_CHECKING:
     from swarm.swarm import Swarm
 
 
-class Entity(ABC):
+class Entity:
     """An entity is an individual member of a swarm, taking actions based on a set of rules that must be implemented."""
-
-    def __str__(self) -> str:
-        """Return a representation of this entity as a string.
-
-        Returns:
-            str: a string representation of this entity
-        """
-        grid_size_digits = len(str(self._grid_size - 1))
-
-        return "[{}] | p ({:{width}},{:{width}}) | v {} | a {} | t {} |".format(
-            type(self).__name__.upper(),
-            self.position[0],
-            self.position[1],
-            self.velocity,
-            self.acceleration,
-            self.time_step,
-            width=grid_size_digits,
-        )
 
     def __init__(
         self,
@@ -49,7 +30,28 @@ class Entity(ABC):
         self.acceleration = initial_acceleration
         self.positions = []
 
-    @abstractmethod
+    def __str__(self) -> str:
+        """Return a representation of this entity as a string.
+
+        Returns:
+            str: a string representation of this entity
+        """
+        grid_size_digits = len(str(self._grid_size - 1))
+
+        return (
+            "[{}] | p ({:{width}},{:{width}}) | v ({},{}) | a ({},{}) | t {} |".format(
+                type(self).__name__.upper(),
+                int(self.position[0]),
+                int(self.position[1]),
+                round(self.velocity[0], 2),
+                round(self.velocity[1], 2),
+                round(self.acceleration[0], 2),
+                round(self.acceleration[1], 2),
+                self.time_step,
+                width=grid_size_digits,
+            )
+        )
+
     def update_position(self, swarm: "Swarm") -> None:
         """Update the position of this entity by following some rules of a particular model."""
-        pass
+        raise NotImplementedError
