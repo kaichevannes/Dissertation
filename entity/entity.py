@@ -36,20 +36,15 @@ class Entity:
         Returns:
             str: a string representation of this entity
         """
-        grid_size_digits = len(str(self._grid_size - 1))
-
-        return (
-            "[{}] | p ({:{width}},{:{width}}) | v ({},{}) | a ({},{}) | t {} |".format(
-                type(self).__name__.upper(),
-                int(self.position[0]),
-                int(self.position[1]),
-                round(self.velocity[0], 2),
-                round(self.velocity[1], 2),
-                round(self.acceleration[0], 2),
-                round(self.acceleration[1], 2),
-                self.time_step,
-                width=grid_size_digits,
-            )
+        return "[{}] | p ({:6.2f},{:6.2f}) | v ({:6.2f},{:6.2f}) | a ({:6.2f},{:6.2f}) | t {} |".format(
+            type(self).__name__.upper(),
+            self.position[0],
+            self.position[1],
+            self.velocity[0],
+            self.velocity[1],
+            self.acceleration[0],
+            self.acceleration[1],
+            self.time_step,
         )
 
     def update_position(self, swarm: "Swarm") -> None:

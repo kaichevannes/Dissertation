@@ -1,7 +1,10 @@
 from entity_factory.entity_factory import EntityFactory
 from entity.entity import Entity
 import matplotlib.pyplot as plt
+from matplotlib.markers import MarkerStyle
+from matplotlib.path import Path
 import numpy as np
+import math
 
 
 class Swarm:
@@ -74,13 +77,76 @@ class Swarm:
             entity.update_position(self)
 
     def initialise_plot(self, ax: plt.Axes) -> None:
-        self.step()
-        print(self)
-        positions = np.array([entity.position for entity in self.entities])
-        self.sc = ax.scatter(positions[:, 0], positions[:, 1])
+        """Initialise the plot when visualising.
 
-    def plot(self, ax: plt.Axes) -> None:
+        Args:
+            ax (plt.Axes): the axes to plot on
+        """
         self.step()
         print(self)
         positions = np.array([entity.position for entity in self.entities])
+
+        self.sc = ax.scatter(positions[:, 0], positions[:, 1], c="black", s=250)
+        self.ax = ax
+
+        self.update_markers()
+
+    def update_plot(self, frame: int) -> None:
+        """Update the plot
+
+        Args:
+            frame (int): the number of the frame this plot is currently on
+        """
+        self.step()
+        print(self)
+        positions = np.array([entity.position for entity in self.entities])
+
         self.sc.set_offsets(np.c_[positions[:, 0], positions[:, 1]])
+        self.ax.set_title(f"t = {frame}")
+
+        self.update_markers()
+
+    def update_markers(self):
+        """Update the markers for the graph at this time step."""
+        markers = [self.generate_arrow_marker(entity) for entity in self.entities]
+
+        # Update markers
+        paths = []
+
+        for marker in markers:
+            marker_obj = MarkerStyle(marker)
+            path = marker_obj.get_path().transformed(marker_obj.get_transform())
+            paths.append(path)
+
+        self.sc.set_paths(paths)
+
+    def generate_arrow_marker(self, entity: Entity) -> Path:
+        """Generate an arrow marker for an entity, pointing in the same direction as that entity. Adapted from https://stackoverflow.com/a/66973317
+
+        Args:
+            entity (Entity): the entity to generate the marker for
+
+        Returns:
+            Path: the path representation of the marker
+        """
+        velocity = entity.velocity
+        theta = math.atan2(velocity[1], velocity[0])
+
+        arrow_shape = np.array(
+            [[0.1, 0.3], [0.1, -0.3], [1, 0], [0.1, 0.3]]
+        )  # arrow shape
+        # arrow_shape = np.array([[0.3, 0.3], [0.3, -0.3], [1, 0], [0.3, 0.3]])
+
+        rotation_matrix = np.array(
+            [[np.cos(theta), np.sin(theta)], [-np.sin(theta), np.cos(theta)]]
+        )
+        arrow_shape = np.matmul(arrow_shape, rotation_matrix)  # rotates the arrow
+        codes = [
+            Path.MOVETO,
+            Path.LINETO,
+            Path.LINETO,
+            Path.CLOSEPOLY,
+        ]
+        arrow_head_marker = Path(arrow_shape, codes)
+
+        return arrow_head_marker

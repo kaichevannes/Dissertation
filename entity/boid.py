@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from entity.entity import Entity
-from entity.boid.boid_neighbour import BoidNeighbour
+from entity.neighbour import Neighbour
 from swarm.swarm import Swarm
 import numpy as np
 
@@ -20,7 +20,7 @@ class Boid(Entity):
         collision_avoidance_radius: int,
         velocity_matching_radius: int,
         flock_centering_radius: int,
-        grid_size: int,
+        grid_size: float,
         initial_position: np.ndarray[float, float],
         initial_velocity: np.ndarray[float, float] = np.array([0, 0]),
         initial_acceleration: np.ndarray[float, float] = np.array([0, 0]),
@@ -117,11 +117,10 @@ class Boid(Entity):
             if boid == self:
                 continue
 
-            neighbour = BoidNeighbour(radius, boid, self)
-            if neighbour.is_neighbour():
-                # Note that this is now an adjusted copy of the boid in the swarm
-                # neighbours.append(neighbour.neighbour_boid)
-                neighbours.append(neighbour.neighbour_boid)
+            neighbour = Neighbour(boid, self)
+            distance_between_boids = np.linalg.norm(neighbour._position - self.position)
+            if distance_between_boids <= radius:
+                neighbours.append(neighbour)
 
         # TODO: Represent neighbours as a matrix for more efficient numpy operations.
         return neighbours
@@ -198,7 +197,7 @@ class Boid(Entity):
         )
 
         random_acceleration = (
-            np.random.uniform(-1.0, 1.0, size=2) * self._noise_fraction
+            np.random.normal(size=2) * self._noise_fraction
         )  # TODO: Gaussian
 
         # TODO: Enforce collision avoidance, velocity_matching, flock_centering being constrainted by size in that order increasing.
@@ -208,6 +207,9 @@ class Boid(Entity):
             + flock_centering_acceleration
             + random_acceleration
         )
+        # print(f"collision_avoidance_accleration = {collision_avoidance_accleration}")
+        # print(f"velocity_matching_acceleration = {velocity_matching_acceleration}")
+        # print(f"flock_centering_acceleration = {flock_centering_acceleration}")
 
     def _collision_avoidance_acceleration(
         self, swarm: Swarm
@@ -227,7 +229,9 @@ class Boid(Entity):
         total_normalised_distance = np.array([0, 0])
         for neighbour in neighbours:
             distance = self.position - neighbour.position
-            normalised_distance = distance / (np.linalg.norm(neighbour.position) ** 2)
+            normalised_distance = distance / (
+                1 + (np.linalg.norm(neighbour.position) ** 2)
+            )
             total_normalised_distance = np.add(
                 total_normalised_distance,
                 normalised_distance,

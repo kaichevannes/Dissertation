@@ -1,5 +1,5 @@
 from entity_factory.entity_factory import EntityFactory
-from entity.boid.boid import Boid
+from entity.boid import Boid
 
 
 class BoidFactory(EntityFactory):
@@ -7,7 +7,8 @@ class BoidFactory(EntityFactory):
 
     def __init__(
         self,
-        grid_size: int,
+        grid_size: float,
+        random_seed: int,
         collision_avoidance_radius: int,
         velocity_matching_radius: int = None,
         flock_centering_radius: int = None,
@@ -21,7 +22,7 @@ class BoidFactory(EntityFactory):
             grid_size (int): The size of the simulation grid
             neighbour_radius (int): The radius where a boid recognises neighbours
         """
-        super().__init__(grid_size=grid_size)
+        super().__init__(grid_size=grid_size, random_seed=random_seed)
         self.collision_avoidance_radius = collision_avoidance_radius
         self.velocity_matching_radius = velocity_matching_radius
         self.flock_centering_radius = flock_centering_radius
@@ -36,6 +37,9 @@ class BoidFactory(EntityFactory):
             self.flock_centering_radius = self.collision_avoidance_radius * 2
 
     def create_entity(self) -> Boid:
+        position = self._generate_random_coordinates()
+        velocity = self._generate_random_coordinates() / self.grid_size
+
         # TODO: Allow for changing just 1 at a time.
         if (
             self.collision_avoidance_weighting is not None
@@ -47,8 +51,8 @@ class BoidFactory(EntityFactory):
                 velocity_matching_radius=self.velocity_matching_radius,
                 flock_centering_radius=self.flock_centering_radius,
                 grid_size=self.grid_size,
-                initial_position=self._generate_random_coordinates(),
-                initial_velocity=self._generate_random_coordinates() / self.grid_size,
+                initial_position=position,
+                initial_velocity=velocity,
                 collision_avoidance_weighting=self.collision_avoidance_weighting,
                 velocity_matching_weighting=self.velocity_matching_weighting,
                 flock_centering_weighting=self.flock_centering_weighting,
@@ -60,7 +64,7 @@ class BoidFactory(EntityFactory):
             velocity_matching_radius=self.velocity_matching_radius,
             flock_centering_radius=self.flock_centering_radius,
             grid_size=self.grid_size,
-            initial_position=self._generate_random_coordinates(),
-            initial_velocity=self._generate_random_coordinates() / self.grid_size,
+            initial_position=position,
+            initial_velocity=velocity,
             noise_fraction=self.noise_fraction,
         )
