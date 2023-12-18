@@ -28,6 +28,14 @@ class EntityFactory:
         y_coordinate = random.randint(0, math.ceil(self.grid_size))
         return np.array([x_coordinate, y_coordinate])
 
+    def _generate_random_velocity(self) -> np.ndarray[float, float]:
+        if self.grid_size < 1:
+            raise ValueError("Grid size must be at least 1.")
+        int_grid_size = math.ceil(self.grid_size)
+        x_velocity = random.randint(-int_grid_size, int_grid_size)
+        y_velocity = random.randint(-int_grid_size, int_grid_size)
+        return np.array([x_velocity, y_velocity]) / int_grid_size
+
     def create_entity(self) -> Entity:
         """Factory method.
 

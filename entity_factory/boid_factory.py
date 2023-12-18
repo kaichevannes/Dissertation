@@ -8,8 +8,8 @@ class BoidFactory(EntityFactory):
     def __init__(
         self,
         grid_size: float,
-        random_seed: int,
         collision_avoidance_radius: int,
+        random_seed: int = None,
         velocity_matching_radius: int = None,
         flock_centering_radius: int = None,
         collision_avoidance_weighting: int = None,
@@ -38,7 +38,8 @@ class BoidFactory(EntityFactory):
 
     def create_entity(self) -> Boid:
         position = self._generate_random_coordinates()
-        velocity = self._generate_random_coordinates() / self.grid_size
+        velocity = self._generate_random_velocity()
+        # velocity = self._generate_random_coordinates() / self.grid_size
 
         # TODO: Allow for changing just 1 at a time.
         if (

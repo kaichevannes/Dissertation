@@ -135,14 +135,14 @@ class Boid(Entity):
         # Rule 2: Velocity matching
         # Rule 3: Flock centering
 
-        self.positions.append(
-            [
-                self.position,
-                self.velocity,
-                self.acceleration,
-                self.time_step,
-            ]
-        )
+        # self.positions.append(
+        #     [
+        #         self.position,
+        #         self.velocity,
+        #         self.acceleration,
+        #         self.time_step,
+        #     ]
+        # )
 
         if self.position[0] < 0:
             self.position[0] += self._grid_size
