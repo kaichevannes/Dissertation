@@ -15,12 +15,14 @@ class Entity:
         initial_velocity: np.ndarray[float, float] = np.array([0, 0]),
         initial_acceleration: np.ndarray[float, float] = np.array([0, 0]),
         initial_time_step: int = 0,
+        override_lambda: float = 0,
     ) -> None:
         """
         Args:
             grid_size (int): The bounding size of the simulation grid.
-            initial_position np.ndarray[int, int]: The initial coordinate position of the entity
-            initial_velocity (float): The initial velocity of the entity
+            initial_position (np.ndarray[int, int], optional): The initial coordinate position of the entity
+            initial_velocity (np.ndarray[int, int], optional): The initial velocity of the entity
+            initial_acceleration (np.ndarray[int, int], optional): The initial acceleration of the entity (Defaults to 0)
             initial_time (int, optional): The initial time step of the entity (Defaults to 0)
         """
         self._grid_size = grid_size

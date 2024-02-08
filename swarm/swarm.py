@@ -48,6 +48,13 @@ class Swarm:
 
         return full_string
 
+    # TODO: Refactor disgusting constructor with this class method contructor thing instead
+    @classmethod
+    def from_entities(cls, entities: list[Entity]):
+        swarm = Swarm(None, None)
+        swarm.entities = entities
+        return swarm
+
     def generate_entities(self) -> None:
         """Generate a new swarm based on the initialisation parameters."""
         if self.swarm_size < 0:
@@ -205,7 +212,7 @@ class Swarm:
         self.ax = ax
         self.ax.get_xaxis().set_visible(False)
         self.ax.get_yaxis().set_visible(False)
-        # self.ax.set_title(f"t = 0")
+        self.ax.set_title(f"t = 0")
 
         # self.update_colours()
 
@@ -222,13 +229,13 @@ class Swarm:
         # print(f"Alignment = {self.calculate_visceks_order_parameter()}")
         # print(f" Num Groups = {self.calculate_number_of_groups()}")
         # print(f"Lanchesters = {self.calculate_lanchesters_index()}")
-        print(f"Rotation = {self.calculate_rotation_order_parameter(frame)}")
+        # print(f"Rotation = {self.calculate_rotation_order_parameter(frame)}")
         positions = np.array([entity.position for entity in self.entities])
 
         self.sc.set_offsets(np.c_[positions[:, 0], positions[:, 1]])
-        # self.ax.set_title(f"t = {frame}")
-        if frame % 250 == 0:
-            input()
+        self.ax.set_title(f"t = {frame}")
+        # if frame % 250 == 0:
+        #     input()
 
         # self.update_colours()
 

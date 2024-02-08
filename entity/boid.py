@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 from entity.entity import Entity
 from entity.neighbour import Neighbour
 from swarm.swarm import Swarm
@@ -29,6 +29,7 @@ class Boid(Entity):
         velocity_matching_weighting: int = 1,
         flock_centering_weighting: int = 10,
         noise_fraction: int = 0,
+        override_fraction: float = 0,
     ):
         """
         Args:
@@ -44,6 +45,7 @@ class Boid(Entity):
             velocity_matching_weighting (int, optional): how much this boid wants to match velocities with neighbouring boids (Defaults to 1)
             flock_centering_weighting (int, optional): how much this boid wants to move towards its neighbours center of mass (Defaults to 10)
             noise_fraction (int, optional): how much noise impacts this boids movements from 0 being none to 1 being totally random
+            override_fraction (float, optional): how much control we are taking over this boid from 0 being none to 1 being total
         """
         super().__init__(
             grid_size=grid_size,
@@ -78,6 +80,7 @@ class Boid(Entity):
             self._velocity_matching_weighting = 0
             self._flock_centering_weighting = 0
         self._noise_fraction = noise_fraction
+        self.override_fraction = override_fraction
 
     def __deepcopy__(self, memo=None) -> "Boid":
         """Create a copy of this boid.
@@ -125,8 +128,10 @@ class Boid(Entity):
         # TODO: Represent neighbours as a matrix for more efficient numpy operations.
         return neighbours
 
-    def update_position(self, swarm: Swarm) -> None:
-        """Update the position of this boid based on the updated velocity.
+    def update_position(
+        self, swarm: Swarm, goal_position: np.ndarray[float, float] = None
+    ) -> None:
+        """Update the position of this boid by a combination of boids movement and direct to goal movement
 
         Args:
             swarm (Swarm): the entire swarm
@@ -154,12 +159,25 @@ class Boid(Entity):
         elif self.position[1] > self._grid_size:
             self.position[1] -= self._grid_size
 
+        normalised_to_goal_velocity = np.array([0, 0])
+        if goal_position is not None:
+            x_difference = goal_position[0] - self.position[0]
+            y_difference = goal_position[1] - self.position[1]
+            to_goal_velocity = np.array([x_difference, y_difference])
+            normalised_to_goal_velocity = to_goal_velocity / np.linalg.norm(
+                to_goal_velocity
+            )
+
         self._update_velocity(swarm)
-        self.position = self.position + self.velocity
+
+        # p_n+1 = p_n + (lam)(to_goal_velocity) + (1-lam)(boids_veloicty)
+        self.position = (
+            self.position
+            + (self.override_fraction) * normalised_to_goal_velocity
+            + (1 - self.override_fraction) * self.velocity
+        )
 
         self.time_step += 1
-
-        # Move towards the center of mass of all boids
 
     def _update_velocity(self, swarm: Swarm) -> None:
         """Update the velocity of this boid based on the updated acceleration.
