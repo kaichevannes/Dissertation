@@ -1,4 +1,4 @@
-from entity_factory.entity_factory import EntityFactory
+from entity.factory.entity_factory import EntityFactory
 from entity.entity import Entity
 import matplotlib.pyplot as plt
 from matplotlib.markers import MarkerStyle
@@ -48,7 +48,7 @@ class Swarm:
 
         return full_string
 
-    # TODO: Refactor disgusting constructor with this class method contructor thing instead
+    # TODO: Refactor disgusting constructor with this factory method instead
     @classmethod
     def from_entities(cls, entities: list[Entity]):
         swarm = Swarm(None, None)
@@ -63,81 +63,83 @@ class Swarm:
             self.entity_factory.create_entity() for _ in range(self.swarm_size)
         ]
 
-    def calculate_visceks_order_parameter(self) -> float:
-        """Calculate the Visceks order parameter at this time step.
+    # TODO: Remove below code once refactored
 
-        Returns:
-            float: the Visceks order parameter at this time step
-        """
-        # from viscek, quoted from Harvey et al
-        total_normalised_velocity = np.array([0, 0])
-        for entity in self.entities:
-            if np.linalg.norm(entity.velocity) == 0:
-                continue
-            normalised_velocity = entity.velocity / np.linalg.norm(entity.velocity)
-            total_normalised_velocity = np.add(
-                total_normalised_velocity,
-                normalised_velocity,
-            )
+    # def calculate_visceks_order_parameter(self) -> float:
+    #     """Calculate the Visceks order parameter at this time step.
 
-        return np.linalg.norm(total_normalised_velocity) / len(self.entities)
+    #     Returns:
+    #         float: the Visceks order parameter at this time step
+    #     """
+    #     # from viscek, quoted from Harvey et al
+    #     total_normalised_velocity = np.array([0, 0])
+    #     for entity in self.entities:
+    #         if np.linalg.norm(entity.velocity) == 0:
+    #             continue
+    #         normalised_velocity = entity.velocity / np.linalg.norm(entity.velocity)
+    #         total_normalised_velocity = np.add(
+    #             total_normalised_velocity,
+    #             normalised_velocity,
+    #         )
 
-    def calculate_lanchesters_index(self) -> float:
-        # From Zhang
-        # if self.graph is None:
-        graph = nx.Graph()
-        graph.add_nodes_from(self.entities)
+    #     return np.linalg.norm(total_normalised_velocity) / len(self.entities)
 
-        for entity in self.entities:
-            for possible_neighbour in self.entities:
-                if entity == possible_neighbour:
-                    continue
-                dist = np.linalg.norm(possible_neighbour.position - entity.position)
-                if min(dist, entity._grid_size - dist) < (
-                    entity._collision_avoidance_radius
-                ):  # multiplied by the swarm density
-                    graph.add_edge(entity, possible_neighbour)
+    # def calculate_lanchesters_index(self) -> float:
+    #     # From Zhang
+    #     # if self.graph is None:
+    #     graph = nx.Graph()
+    #     graph.add_nodes_from(self.entities)
 
-        # print(graph)
-        # now we have a graph of boids and edges.
-        groups = nx.connected_components(graph)
+    #     for entity in self.entities:
+    #         for possible_neighbour in self.entities:
+    #             if entity == possible_neighbour:
+    #                 continue
+    #             dist = np.linalg.norm(possible_neighbour.position - entity.position)
+    #             if min(dist, entity._grid_size - dist) < (
+    #                 entity._collision_avoidance_radius
+    #             ):  # multiplied by the swarm density
+    #                 graph.add_edge(entity, possible_neighbour)
 
-        group_sizes_squared = 0
-        for group in groups:
-            group_sizes_squared += len(group) ** 2
+    #     # print(graph)
+    #     # now we have a graph of boids and edges.
+    #     groups = nx.connected_components(graph)
 
-        lanchesters_index = (1 / len(self.entities) ** 2) * group_sizes_squared
-        return lanchesters_index
+    #     group_sizes_squared = 0
+    #     for group in groups:
+    #         group_sizes_squared += len(group) ** 2
 
-    def calculate_number_of_groups(self) -> int:
-        # Used by Harvey et al. in Application of chaos measures to a simplified boids flocking model
-        graph = nx.Graph()
-        graph.add_nodes_from(self.entities)
+    #     lanchesters_index = (1 / len(self.entities) ** 2) * group_sizes_squared
+    #     return lanchesters_index
 
-        for entity in self.entities:
-            for possible_neighbour in self.entities:
-                if entity == possible_neighbour:
-                    continue
-                dist = np.linalg.norm(possible_neighbour.position - entity.position)
-                average_radius = (
-                    entity._flock_centering_radius
-                    + entity._collision_avoidance_radius
-                    + entity._velocity_matching_radius
-                ) / 3
-                if (
-                    min(dist, entity._grid_size - dist)
-                    < entity._collision_avoidance_radius
-                ):
-                    graph.add_edge(entity, possible_neighbour)
+    # def calculate_number_of_groups(self) -> int:
+    #     # Used by Harvey et al. in Application of chaos measures to a simplified boids flocking model
+    #     graph = nx.Graph()
+    #     graph.add_nodes_from(self.entities)
 
-        # print(graph)
-        # now we have a graph of boids and edges.
-        self.graph = graph
-        groups = nx.connected_components(graph)
-        num_groups = 0
-        for _ in groups:
-            num_groups += 1
-        return num_groups
+    #     for entity in self.entities:
+    #         for possible_neighbour in self.entities:
+    #             if entity == possible_neighbour:
+    #                 continue
+    #             dist = np.linalg.norm(possible_neighbour.position - entity.position)
+    #             average_radius = (
+    #                 entity._flock_centering_radius
+    #                 + entity._collision_avoidance_radius
+    #                 + entity._velocity_matching_radius
+    #             ) / 3
+    #             if (
+    #                 min(dist, entity._grid_size - dist)
+    #                 < entity._collision_avoidance_radius
+    #             ):
+    #                 graph.add_edge(entity, possible_neighbour)
+
+    #     # print(graph)
+    #     # now we have a graph of boids and edges.
+    #     self.graph = graph
+    #     groups = nx.connected_components(graph)
+    #     num_groups = 0
+    #     for _ in groups:
+    #         num_groups += 1
+    #     return num_groups
 
     def calculate_rotation_order_parameter(self, t):
         z = 10
@@ -204,7 +206,7 @@ class Swarm:
         self.graph = None
         plt.rcParams.update({"font.size": 22})
         self.step()
-        print(self)
+        # print(self)
         self.velocities = []
         positions = np.array([entity.position for entity in self.entities])
 

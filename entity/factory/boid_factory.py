@@ -1,4 +1,4 @@
-from entity_factory.entity_factory import EntityFactory
+from entity.factory.entity_factory import EntityFactory
 from entity.boid import Boid
 
 

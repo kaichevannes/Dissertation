@@ -15,7 +15,6 @@ class Entity:
         initial_velocity: np.ndarray[float, float] = np.array([0, 0]),
         initial_acceleration: np.ndarray[float, float] = np.array([0, 0]),
         initial_time_step: int = 0,
-        override_lambda: float = 0,
     ) -> None:
         """
         Args:
