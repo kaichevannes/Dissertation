@@ -3,27 +3,28 @@ import numpy as np
 
 class SimulationResult:
     """The simulation result class is used to handle the results from a simulation.
-    This is generic to allow for different handling of the results themselves."""
+    This is generic to allow for different handling of the results."""
 
     def __init__(self) -> None:
-        self.results = []
+        """Initialise results to be an empty dict."""
+        self.results = {}
 
-    def add_result(self, result: float) -> None:
+    def add_result(self, timestep: int, result: float) -> None:
         """Add a result to the list of results
 
         Args:
             result (float): the result to append
         """
         if result is not None:
-            self.results.append(result)
+            self.results[timestep] = result
 
-    def get_results(self) -> np.ndarray[float]:
+    def get_results(self) -> dict[int, float]:
         """Get the results from this simulation result class.
 
         Returns:
-            np.ndarray[float]: a list of results from 0 to t where t is the number of time steps of the simulation
+            dict[int,float]: a dict of results [timestep, value] from 0 to t where t is the number of time steps of the simulation
         """
-        return np.array(self.results)
+        return self.results
 
     def average_after_t0(self, t0: int) -> float:
         """Get the average value of the simulation after the t0'th value.

@@ -6,6 +6,7 @@ from entity.factory.boid_factory import BoidFactory
 from order_parameter.order_parameter import OrderParameter
 from swarm.adjuster.boid_swarm_adjuster import BoidSwarmAdjuster
 import numpy as np
+import threading
 
 
 class BoidSimulation(Simulation):
@@ -42,29 +43,38 @@ class BoidSimulation(Simulation):
         self.order_parameter = order_parameter
         self.swarm = Swarm(self.swarm_size, self.boid_factory)
         self.swarm.generate_entities()
-        self.order_parameter.set_swarm(self.swarm)
+        if self.order_parameter is not None:
+            self.order_parameter.set_swarm(self.swarm)
         self.simulation_result = SimulationResult()
         self.swarm_adjuster = boid_simulation_options.swarm_adjuster
+        self.pre_simulation_steps = boid_simulation_options.pre_simulation_steps
+        self.max_time_step = boid_simulation_options.max_time_step
+
+        # TODO: Make this a parameter
+        self.swarm.set_goal_position(np.array([self.grid_size / 2, self.grid_size / 2]))
+
         if self.pre_simulation_steps > self.max_time_step:
             raise ValueError(
                 "Pre simulation steps cannot be greater than the max time step."
             )
-        self.pre_simulation_steps = boid_simulation_options.pre_simulation_steps
-        self.max_time_step = boid_simulation_options.max_time_step
 
     def run(self) -> SimulationResult:
         """Run this simulation from start to finish."""
         if self.visualiser is None:
             print(f"Starting {type(self.order_parameter)} simulation.")
             for t in range(self.pre_simulation_steps):
+                if t % 100 == 0:
+                    print(f"{threading.current_thread()}: pre-t = {t}")
                 self.swarm.step()
             if self.swarm_adjuster is not None:
                 self.swarm_adjuster.adjust_swarm(self.swarm)
             for t in range(self.max_time_step - self.pre_simulation_steps):
+                if t % 100 == 0:
+                    print(f"{threading.current_thread()}: t = {t}")
                 self.swarm.step()
                 if self.order_parameter is not None:
                     current_result = self.order_parameter.calculate()
-                    self.simulation_result.add_result(current_result)
+                    self.simulation_result.add_result(t, current_result)
                     if self.debug:
                         print(f"{type(self.order_parameter)}: {current_result}")
             return self.simulation_result
@@ -75,13 +85,18 @@ class BoidSimulation(Simulation):
             self.visualiser.set_steps(self.pre_simulation_steps)
             self.visualiser.set_grid_size(self.grid_size)
             self.visualiser.initialise_visualisation()
+            self.visualiser.set_end_frame(self.visualiser.steps - 1)
             self.visualiser.visualise()
 
             if self.swarm_adjuster is not None:
                 self.swarm_adjuster.adjust_swarm(self.swarm)
+                print("Adjusted swarm")
+                print("Current swarm:")
+                print(self.swarm)
 
             self.visualiser.set_steps(self.max_time_step - self.pre_simulation_steps)
             # Adjust swarm here
             self.visualiser.initialise_visualisation()
+            self.visualiser.set_end_frame(self.visualiser.steps)
             self.visualiser.visualise()
             return None

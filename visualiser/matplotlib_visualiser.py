@@ -13,11 +13,17 @@ class MatplotlibVisualiser(Visualiser):
         plt.xlim(0, self.grid_size)
         plt.ylim(0, self.grid_size)
 
+    def set_end_frame(self, end_frame):
+        self.swarm.set_end_frame(end_frame)
+
     def visualise(self):
         # TODO: Decouple this visualuser from the swarm function somehow.
         if self.steps is None:
             raise LookupError("No max time step is assigned to this visualiser.")
         _ = animation.FuncAnimation(
-            self.fig, self.swarm.update_plot, frames=self.steps
+            self.fig, self.swarm.update_plot, frames=self.steps, repeat=False
         )
         plt.show()
+
+    def stop(self):
+        plt.close()

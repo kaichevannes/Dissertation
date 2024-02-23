@@ -128,9 +128,7 @@ class Boid(Entity):
         # TODO: Represent neighbours as a matrix for more efficient numpy operations.
         return neighbours
 
-    def update_position(
-        self, swarm: Swarm, goal_position: np.ndarray[float, float] = None
-    ) -> None:
+    def update_position(self, swarm: Swarm) -> None:
         """Update the position of this boid by a combination of boids movement and direct to goal movement
 
         Args:
@@ -160,22 +158,20 @@ class Boid(Entity):
             self.position[1] -= self._grid_size
 
         normalised_to_goal_velocity = np.array([0, 0])
-        if goal_position is not None:
-            x_difference = goal_position[0] - self.position[0]
-            y_difference = goal_position[1] - self.position[1]
+        if swarm.goal_position is not None:
+            x_difference = swarm.goal_position[0] - self.position[0]
+            y_difference = swarm.goal_position[1] - self.position[1]
             to_goal_velocity = np.array([x_difference, y_difference])
             normalised_to_goal_velocity = to_goal_velocity / np.linalg.norm(
                 to_goal_velocity
             )
 
         self._update_velocity(swarm)
+        self.velocity = (self.override_fraction) * normalised_to_goal_velocity + (
+            1 - self.override_fraction
+        ) * self.velocity
 
-        # p_n+1 = p_n + (lam)(to_goal_velocity) + (1-lam)(boids_veloicty)
-        self.position = (
-            self.position
-            + (self.override_fraction) * normalised_to_goal_velocity
-            + (1 - self.override_fraction) * self.velocity
-        )
+        self.position = self.position + self.velocity
 
         self.time_step += 1
 
@@ -214,9 +210,7 @@ class Boid(Entity):
             Swarm(None, None, velocity_matching_neighbours)
         )
 
-        random_acceleration = (
-            np.random.normal(size=2) * self._noise_fraction
-        )  # TODO: Gaussian
+        random_acceleration = np.random.normal(size=2) * self._noise_fraction
 
         # TODO: Enforce collision avoidance, velocity_matching, flock_centering being constrainted by size in that order increasing.
         self.acceleration = (

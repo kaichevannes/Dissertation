@@ -48,6 +48,9 @@ class Swarm:
 
         return full_string
 
+    def set_goal_position(self, goal_position: np.ndarray[float, float]):
+        self.goal_position = goal_position
+
     # TODO: Refactor disgusting constructor with this factory method instead
     @classmethod
     def from_entities(cls, entities: list[Entity]):
@@ -62,135 +65,6 @@ class Swarm:
         self.entities = [
             self.entity_factory.create_entity() for _ in range(self.swarm_size)
         ]
-
-    # TODO: Remove below code once refactored
-
-    # def calculate_visceks_order_parameter(self) -> float:
-    #     """Calculate the Visceks order parameter at this time step.
-
-    #     Returns:
-    #         float: the Visceks order parameter at this time step
-    #     """
-    #     # from viscek, quoted from Harvey et al
-    #     total_normalised_velocity = np.array([0, 0])
-    #     for entity in self.entities:
-    #         if np.linalg.norm(entity.velocity) == 0:
-    #             continue
-    #         normalised_velocity = entity.velocity / np.linalg.norm(entity.velocity)
-    #         total_normalised_velocity = np.add(
-    #             total_normalised_velocity,
-    #             normalised_velocity,
-    #         )
-
-    #     return np.linalg.norm(total_normalised_velocity) / len(self.entities)
-
-    # def calculate_lanchesters_index(self) -> float:
-    #     # From Zhang
-    #     # if self.graph is None:
-    #     graph = nx.Graph()
-    #     graph.add_nodes_from(self.entities)
-
-    #     for entity in self.entities:
-    #         for possible_neighbour in self.entities:
-    #             if entity == possible_neighbour:
-    #                 continue
-    #             dist = np.linalg.norm(possible_neighbour.position - entity.position)
-    #             if min(dist, entity._grid_size - dist) < (
-    #                 entity._collision_avoidance_radius
-    #             ):  # multiplied by the swarm density
-    #                 graph.add_edge(entity, possible_neighbour)
-
-    #     # print(graph)
-    #     # now we have a graph of boids and edges.
-    #     groups = nx.connected_components(graph)
-
-    #     group_sizes_squared = 0
-    #     for group in groups:
-    #         group_sizes_squared += len(group) ** 2
-
-    #     lanchesters_index = (1 / len(self.entities) ** 2) * group_sizes_squared
-    #     return lanchesters_index
-
-    # def calculate_number_of_groups(self) -> int:
-    #     # Used by Harvey et al. in Application of chaos measures to a simplified boids flocking model
-    #     graph = nx.Graph()
-    #     graph.add_nodes_from(self.entities)
-
-    #     for entity in self.entities:
-    #         for possible_neighbour in self.entities:
-    #             if entity == possible_neighbour:
-    #                 continue
-    #             dist = np.linalg.norm(possible_neighbour.position - entity.position)
-    #             average_radius = (
-    #                 entity._flock_centering_radius
-    #                 + entity._collision_avoidance_radius
-    #                 + entity._velocity_matching_radius
-    #             ) / 3
-    #             if (
-    #                 min(dist, entity._grid_size - dist)
-    #                 < entity._collision_avoidance_radius
-    #             ):
-    #                 graph.add_edge(entity, possible_neighbour)
-
-    #     # print(graph)
-    #     # now we have a graph of boids and edges.
-    #     self.graph = graph
-    #     groups = nx.connected_components(graph)
-    #     num_groups = 0
-    #     for _ in groups:
-    #         num_groups += 1
-    #     return num_groups
-
-    def calculate_rotation_order_parameter(self, t):
-        z = 10
-        if t == 0:
-            self.velocities = []
-            return None
-        # if t % z != 0:
-        #     time_step_velocities = []
-        #     for entity in self.entities:
-        #         time_step_velocities.append(entity.velocity)
-        #     self.velocities.append(time_step_velocities)
-        #     return None
-        time_step_velocities = []
-        for entity in self.entities:
-            time_step_velocities.append(entity.velocity)
-        self.velocities.append(time_step_velocities)
-
-        if t < z:
-            return None
-
-        # print(self.velocities)
-        total_global_velocity_difference = 0
-        for entity_index in range(len(self.entities)):
-            total_velocity_difference = 0
-            # print("start")
-            # for velocity_index in range(z - 2):
-            #     velocity_k = self.velocities[velocity_index][entity_index]
-            #     velocity_k_plus_1 = self.velocities[velocity_index + 1][entity_index]
-            #     # print("k", velocity_k)
-            #     # print("k+1", velocity_k_plus_1)
-            #     total_velocity_difference += np.abs(
-            #         (
-            #             np.cross(velocity_k, velocity_k_plus_1)
-            #             - np.cross(velocity_k_plus_1, velocity_k)
-            #         )
-            #         / (np.linalg.norm(velocity_k) * np.linalg.norm(velocity_k_plus_1))
-            #     )
-            # print("end")
-            for velocity_index in range(z - 2):
-                velocity_k = self.velocities[velocity_index][entity_index]
-                velocity_k_plus_1 = self.velocities[velocity_index + 1][entity_index]
-                # print("k", velocity_k)
-                # print("k+1", velocity_k_plus_1)
-                total_velocity_difference += (
-                    np.cross(velocity_k, velocity_k_plus_1)
-                    - np.cross(velocity_k_plus_1, velocity_k)
-                ) / (np.linalg.norm(velocity_k) * np.linalg.norm(velocity_k_plus_1))
-            total_global_velocity_difference += np.abs(total_velocity_difference) / z
-
-        self.velocities = self.velocities[1:]
-        return total_global_velocity_difference / len(self.entities)
 
     def step(self) -> None:
         """Update by one time step."""
@@ -216,9 +90,21 @@ class Swarm:
         self.ax.get_yaxis().set_visible(False)
         self.ax.set_title(f"t = 0")
 
+        self.ax.plot(
+            self.goal_position[0],
+            self.goal_position[1],
+            mec="g",
+            marker="x",
+            ms=10,
+            ls="none",
+        )
+
         # self.update_colours()
 
         self.update_markers()
+
+    def set_end_frame(self, end_frame: int):
+        self.end_frame = end_frame
 
     def update_plot(self, frame: int) -> None:
         """Update the plot
@@ -226,12 +112,9 @@ class Swarm:
         Args:
             frame (int): the number of the frame this plot is currently on
         """
+        if frame == self.end_frame:
+            plt.close()
         self.step()
-        # print(self)
-        # print(f"Alignment = {self.calculate_visceks_order_parameter()}")
-        # print(f" Num Groups = {self.calculate_number_of_groups()}")
-        # print(f"Lanchesters = {self.calculate_lanchesters_index()}")
-        # print(f"Rotation = {self.calculate_rotation_order_parameter(frame)}")
         positions = np.array([entity.position for entity in self.entities])
 
         self.sc.set_offsets(np.c_[positions[:, 0], positions[:, 1]])
@@ -240,6 +123,7 @@ class Swarm:
         #     input()
 
         # self.update_colours()
+        self.update_override_colours()
 
         # print(f"boid_colours = {boid_colours}")
         self.update_markers()
@@ -273,7 +157,6 @@ class Swarm:
         arrow_shape = np.array(
             [[0.1, 0.3], [0.1, -0.3], [1, 0], [0.1, 0.3]]
         )  # arrow shape
-        # arrow_shape = np.array([[0.3, 0.3], [0.3, -0.3], [1, 0], [0.3, 0.3]])
 
         rotation_matrix = np.array(
             [[np.cos(theta), np.sin(theta)], [-np.sin(theta), np.cos(theta)]]
@@ -289,7 +172,19 @@ class Swarm:
 
         return arrow_head_marker
 
-    def update_colours(self):
+    def update_override_colours(self) -> None:
+        """Boid only..."""
+        # TODO: Refactor to boid swarm along with other non generic methods
+        boid_colours = []
+        for entity in self.entities:
+            if entity.override_fraction > 0:
+                boid_colours.append("red")
+            else:
+                boid_colours.append("black")
+
+        self.sc.set_color(boid_colours)
+
+    def update_cluster_colours(self):
         if self.graph is None:
             graph = nx.Graph()
             graph.add_nodes_from(self.entities)

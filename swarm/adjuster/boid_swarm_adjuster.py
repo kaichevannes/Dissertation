@@ -42,5 +42,5 @@ class BoidSwarmAdjuster(SwarmAdjuster):
         """
         if self.override_fraction is None:
             raise LookupError("Override fraction must be set.")
-        for entity in swarm.entites:
+        for entity in swarm.entities:
             entity.override_fraction = self.override_fraction

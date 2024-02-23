@@ -1,0 +1,29 @@
+filename: given as a parameter to a simulation manager class, 
+->order parameter vs time or order parameter vs simulation parameter
+n-runs: n probably is 10 but this should be fixed accross my report
+k-length: k will be 3000 or 1000 depending on which table is being used
+j-simulation parameter values: how to deal with getting more values in dense regions?
+-------------------------------
+order parameter vs time:
+{
+    simulation_parameter: False
+    0: value 0,
+    ...
+    t: value t
+}
+-------------------------------
+order parameter vs simulation parameter:
+{
+    simulation_parameter: True
+    0: {
+        0: value 0,
+        ...
+        t: value t,
+    },
+    ...
+    1: {
+        run #1: [k],
+        ...
+        run #n: [k],
+    }
+}

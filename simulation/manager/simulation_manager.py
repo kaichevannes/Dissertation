@@ -1,5 +1,5 @@
 from simulation.options.simulation_options import SimulationOptions
-from order_parameter.manager.order_parameter_manager import OrderParameterManager
+from order_parameter.order_parameter import OrderParameter
 
 
 class SimulationManager:
@@ -12,13 +12,14 @@ class SimulationManager:
 
     def __init__(
         self,
-        order_parameter_manager: OrderParameterManager,
+        order_parameter: OrderParameter,
         simulation_options: SimulationOptions,
+        num_runs: int,
     ):
         """Order parameter over time constructor
 
         Args:
-            order_parameter_manager (OrderParameterManager): the order parameter manager which will be used to evaluate the swarm at each time step
+            order_parameter (OrderParameter): the order parameter which will be used to evaluate the swarm at each time step
             simulation_options (SimulationOptions, optional): the simulation options that we use to instantiate the simulation. Defaults to None
         """
         # Unsure
@@ -34,8 +35,10 @@ class SimulationManager:
         # In this case then 2 factory methods should probably be used for each case.
 
         # The default case is just measuring an order parameter over time.
-        self.order_parameter_manager = order_parameter_manager
+        self.order_parameter = order_parameter
         self.simulation_options = simulation_options
+        self.num_runs = num_runs
+        self.simulation_results = []
 
     def run_all(self):
         """Run all simulations with the given order parameters and options.
