@@ -15,6 +15,7 @@ class SimulationOptions:
         max_time_step: int,
         pre_simulation_steps: int,
         swarm_adjuster: SwarmAdjuster,
+        simulation_parameter: bool,
     ):
         """
         Args:
@@ -32,3 +33,4 @@ class SimulationOptions:
         self.max_time_step = max_time_step
         self.pre_simulation_steps = pre_simulation_steps
         self.swarm_adjuster = swarm_adjuster
+        self.simulation_parameter = simulation_parameter

@@ -45,7 +45,9 @@ class BoidSimulation(Simulation):
         self.swarm.generate_entities()
         if self.order_parameter is not None:
             self.order_parameter.set_swarm(self.swarm)
-        self.simulation_result = SimulationResult()
+        self.simulation_result = SimulationResult(
+            boid_simulation_options.simulation_parameter
+        )
         self.swarm_adjuster = boid_simulation_options.swarm_adjuster
         self.pre_simulation_steps = boid_simulation_options.pre_simulation_steps
         self.max_time_step = boid_simulation_options.max_time_step

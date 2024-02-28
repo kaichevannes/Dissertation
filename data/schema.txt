@@ -7,23 +7,47 @@ j-simulation parameter values: how to deal with getting more values in dense reg
 order parameter vs time:
 {
     simulation_parameter: False
-    0: value 0,
+    0: {
+        0: value 0,
+        ...
+        t: value t
+    }
     ...
-    t: value t
+    n: {
+        0: value 0,
+        ...
+        t: value t
+    }
 }
 -------------------------------
 order parameter vs simulation parameter:
 {
     simulation_parameter: True
-    0: {
-        0: value 0,
+    value0: {
+        0: {
+            0: value 0,
+            ...
+            t: value t,
+        }
         ...
-        t: value t,
+        n: {
+            0: value 0,
+            ...
+            t: value t
+        }
     },
     ...
-    1: {
-        run #1: [k],
+    valueN: {
+        0: {
+            0: value 0,
+            ...
+            t: value t,
+        }
         ...
-        run #n: [k],
+        n: {
+            0: value 0,
+            ...
+            t: value t
+        }
     }
 }

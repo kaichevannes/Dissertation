@@ -20,12 +20,13 @@ class BoidSimulationOptions(SimulationOptions):
         self,
         swarm_size: int = 100,
         swarm_density: float = 0.25,
-        radius_multiplier: float = 5,
+        radius_multiplier: float = 5.5,
         noise_fraction: float = 0.05,
         visualiser: Visualiser = None,
         max_time_step: int = 1000,
         pre_simulation_steps: int = 500,
         boid_swarm_adjuster: BoidSwarmAdjuster = None,
+        simulation_parameter: bool = False,
     ):
         """Options constructor.
 
@@ -46,6 +47,7 @@ class BoidSimulationOptions(SimulationOptions):
             max_time_step,
             pre_simulation_steps,
             boid_swarm_adjuster,
+            simulation_parameter,
         )
         self.radius_multiplier = radius_multiplier
         self.noise_fraction = noise_fraction
