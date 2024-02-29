@@ -47,6 +47,8 @@ class BoidSimulationManager(SimulationManager):
         comm = MPI.COMM_WORLD
         rank = comm.Get_rank()
 
+        print(f"rank = {rank}")
+
         data = self._run_one()
 
         if rank == 0:
@@ -54,6 +56,7 @@ class BoidSimulationManager(SimulationManager):
             for i in range(1, self.num_runs):
                 mpi_data = comm.recv(source=i)
                 self.simulation_results.append(mpi_data)
+            MPI.Finalize()
         else:
             comm.send(data, dest=0)
             sys.exit()
