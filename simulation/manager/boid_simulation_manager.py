@@ -56,7 +56,7 @@ class BoidSimulationManager(SimulationManager):
                 self.simulation_results.append(mpi_data)
         else:
             comm.send(data, dest=0)
-            quit()
+            sys.exit()
 
     def _run_one(self) -> SimulationResult:
         simulation = BoidSimulation(self.simulation_options, self.order_parameter)
