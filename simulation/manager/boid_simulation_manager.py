@@ -59,6 +59,7 @@ class BoidSimulationManager(SimulationManager):
             MPI.Finalize()
         else:
             comm.send(data, dest=0)
+            MPI.Finalize()
             sys.exit()
 
     def _run_one(self) -> SimulationResult:
