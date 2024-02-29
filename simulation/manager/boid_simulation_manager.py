@@ -2,7 +2,11 @@ from order_parameter.order_parameter import OrderParameter
 from simulation.options.boid_simulation_options import BoidSimulationOptions
 from simulation.manager.simulation_manager import SimulationManager
 from simulation.boid_simulation import BoidSimulation
-from multiprocessing.pool import ThreadPool
+from simulation.simulation_result import SimulationResult
+
+# from multiprocessing.pool import ThreadPool
+from mpi4py import MPI
+import sys
 import json
 from pathlib import Path
 
@@ -28,22 +32,41 @@ class BoidSimulationManager(SimulationManager):
 
     def run_all(self):
         # Instantiate simulations
-        threadpool = ThreadPool(processes=self.num_runs)
-        simulation_threads = []
-        for _ in range(self.num_runs):
-            simulation = BoidSimulation(self.simulation_options, self.order_parameter)
-            simulation_threads.append(threadpool.apply_async(simulation.run))
+        # threadpool = ThreadPool(processes=self.num_runs)
+        # simulation_threads = []
+        # for _ in range(self.num_runs):
+        #     simulation = BoidSimulation(self.simulation_options, self.order_parameter)
+        #     simulation_threads.append(threadpool.apply_async(simulation.run))
 
-        for async_result in simulation_threads:
-            self.simulation_results.append(async_result.get())
+        # for async_result in simulation_threads:
+        #     self.simulation_results.append(async_result.get())
+
+        # When using MPI, we are basically just running the code n times and here
+        # we know which rank we are on. If the rank is 0, then wait here for the
+        # others to be done.
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
+
+        data = self._run_one()
+
+        if rank == 0:
+            self.simulation_results.append(data)
+            for i in range(1, self.num_runs):
+                mpi_data = comm.recv(source=i)
+                self.simulation_results.append(mpi_data)
+        else:
+            comm.send(data, dest=0)
+
+    def _run_one(self) -> SimulationResult:
+        simulation = BoidSimulation(self.simulation_options, self.order_parameter)
+        return simulation.run()
 
     def save_to_file(self, filename):
         simulation_dict = {}
         for i in range(len(self.simulation_results)):
             simulation_dict[i] = self.simulation_results[i].get_results()
 
-        simulation_parameter = self.simulation_results[0].simulation_parameter_value
-        print(f"simulation_parameter = {simulation_parameter}")
+        simulation_parameter = self.simulation_options.simulation_parameter
         using_simulation_parameters = simulation_parameter is not None
 
         write_file = f"./data/{filename}"

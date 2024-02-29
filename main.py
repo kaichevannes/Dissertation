@@ -8,6 +8,7 @@ from order_parameter.number_of_groups import NumberOfGroups
 from order_parameter.rotation import Rotation
 from order_parameter.distance_to_goal import DistanceToGoal
 import argparse
+from mpi4py import MPI
 
 
 def main(args):
@@ -41,10 +42,8 @@ def main(args):
         simulation_options.max_time_step = args.maxtimestep
 
     # Number of runs
-    if args.numruns is not None:
-        num_runs = args.numruns
-    else:
-        num_runs = 10
+    comm = MPI.COMM_WORLD
+    num_runs = comm.Get_size()
 
     # Visualisation
     if args.visualise:
@@ -52,7 +51,7 @@ def main(args):
         num_runs = 1
 
     # Order parameter
-    match args.order_parameter[0]:
+    match args.order_parameter:
         case "visceks":
             order_parameter = Visceks()
         case "lanchesters":
@@ -88,10 +87,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="Swarm Disseration Simulation",
         description="Simulates a swarm",
+        usage="Usage: mpiexec -n [number_of_cpu_cores] python main.py -params",
     )
     parser.add_argument("-v", "--visualise", action="store_true")
     parser.add_argument("-s", "--slow", action="store_true")
-    parser.add_argument("-n", "--numruns", type=int)
     parser.add_argument("-f", "--filename")
     parser.add_argument("-p", "--presimulationsteps", type=int)
     parser.add_argument("-t", "--maxtimestep", type=int)
@@ -105,7 +104,13 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "order_parameter",
-        choices=["visceks", "lanchesters", "groups", "rotation", "distancetogoal"],
-        nargs="*",
+        choices=[
+            "visceks",
+            "lanchesters",
+            "groups",
+            "rotation",
+            "distancetogoal",
+            "none",
+        ],
     )
     main(parser.parse_args())
