@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ####################################
-#  Iridis 5 slurm script template  
-#                                  
-#  Submit script: sbatch filename  
-#                                  
+#  Iridis 5 slurm script template
+#
+#  Submit script: sbatch filename
+#
 ####################################
 #SBATCH --ntasks=40     # Number of processor cores (i.e. tasks)
 #SBATCH --nodes=1     # Number of nodes requested
