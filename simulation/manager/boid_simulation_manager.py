@@ -63,6 +63,11 @@ class BoidSimulationManager(SimulationManager):
         return simulation.run()
 
     def save_to_file(self, filename):
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
+
+        print(f"rank trying to save the data: {rank}")
+        print(f"data to be saved: {self.simulation_results}")
         simulation_dict = {}
         for i in range(len(self.simulation_results)):
             simulation_dict[i] = self.simulation_results[i].get_results()
