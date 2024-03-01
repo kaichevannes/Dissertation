@@ -3,12 +3,9 @@ from simulation.options.boid_simulation_options import BoidSimulationOptions
 from simulation.manager.simulation_manager import SimulationManager
 from simulation.boid_simulation import BoidSimulation
 from simulation.simulation_result import SimulationResult
-
-# from multiprocessing.pool import ThreadPool
+from simulation.manager.simulation_saver import SimulationSaver
 from mpi4py import MPI
 import sys
-import json
-from pathlib import Path
 
 
 class BoidSimulationManager(SimulationManager):
@@ -63,44 +60,49 @@ class BoidSimulationManager(SimulationManager):
         return simulation.run()
 
     def save_to_file(self, filename):
-        comm = MPI.COMM_WORLD
-        rank = comm.Get_rank()
-
         simulation_dict = {}
         for i in range(len(self.simulation_results)):
             simulation_dict[i] = self.simulation_results[i].get_results()
 
         simulation_parameter = self.simulation_options.simulation_parameter
-        using_simulation_parameters = simulation_parameter is not None
 
-        write_file = f"./data/{filename}"
-        file_exists = Path(write_file).is_file()
+        simulation_saver = SimulationSaver(
+            filename, simulation_dict, simulation_parameter
+        )
+        simulation_saver.save()
 
-        if file_exists:
-            with open(write_file, "r") as outfile:
-                if using_simulation_parameters:
-                    existing_data = json.load(outfile)
-                    if existing_data["simulation_parameter"]:
-                        existing_data[simulation_parameter] = simulation_dict
-                        simulation_dict = existing_data
-                    else:
-                        # ew, damn it
-                        temp_simulation_dict = simulation_dict
-                        simulation_dict = {}
-                        simulation_dict[simulation_parameter] = temp_simulation_dict
-                        simulation_dict["simulation_parameter"] = True
-                else:
-                    simulation_dict["simulation_parameter"] = False
+        # using_simulation_parameters = simulation_parameter is not None
 
-        with open(write_file, "w+") as outfile:
-            # this is so stupid but i cant think of a better way to do this at the moment
-            if not file_exists:
-                if using_simulation_parameters:
-                    temp_simulation_dict = simulation_dict
-                    simulation_dict = {}
-                    simulation_dict[simulation_parameter] = temp_simulation_dict
-                    simulation_dict["simulation_parameter"] = True
-                else:
-                    simulation_dict["simulation_parameter"] = False
+        # write_file = f"./data/{filename}"
+        # file_exists = Path(write_file).is_file()
 
-            json.dump(simulation_dict, outfile)
+        # # if the file exists,
+
+        # if file_exists:
+        #     with open(write_file, "r") as outfile:
+        #         if using_simulation_parameters:
+        #             existing_data = json.load(outfile)
+        #             if existing_data["simulation_parameter"]:
+        #                 existing_data[simulation_parameter] = simulation_dict
+        #                 simulation_dict = existing_data
+        #             else:
+        #                 # ew, damn it
+        #                 temp_simulation_dict = simulation_dict
+        #                 simulation_dict = {}
+        #                 simulation_dict[simulation_parameter] = temp_simulation_dict
+        #                 simulation_dict["simulation_parameter"] = True
+        #         else:
+        #             simulation_dict["simulation_parameter"] = False
+
+        # with open(write_file, "w+") as outfile:
+        #     # this is so stupid but i cant think of a better way to do this at the moment
+        #     if not file_exists:
+        #         if using_simulation_parameters:
+        #             temp_simulation_dict = simulation_dict
+        #             simulation_dict = {}
+        #             simulation_dict[simulation_parameter] = temp_simulation_dict
+        #             simulation_dict["simulation_parameter"] = True
+        #         else:
+        #             simulation_dict["simulation_parameter"] = False
+
+        #     json.dump(simulation_dict, outfile)
