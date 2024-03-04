@@ -3,13 +3,12 @@ import argparse
 
 
 def plot(args):
-    with open(f"./data/{args.filename}") as f:
-        grapher = Grapher(f)
-        grapher.generate_graph()
-        if args.display:
-            grapher.show()
-        if args.save:
-            grapher.save()
+    grapher = Grapher(args.filename)
+    grapher.generate_errorbar()
+    if args.display:
+        grapher.show()
+    if args.save:
+        grapher.save()
 
 
 if __name__ == "__main__":
