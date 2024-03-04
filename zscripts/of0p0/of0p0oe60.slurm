@@ -3,7 +3,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=10
 #SBATCH --cpus-per-task=1
-#SBATCH --time=06:00:00cd /lyceum/kc2g21/Dissertation
+#SBATCH --time=06:00:00
+cd /lyceum/kc2g21/Dissertation
 module load conda
 source activate myenv
 module load openmpi/4.1.1/gcc
