@@ -1,4 +1,4 @@
-from grapher.data_point import DataPoint
+from grapher.data_point.data_point import DataPoint
 
 
 class DataCollator:
@@ -8,5 +8,8 @@ class DataCollator:
         self.data = data
         self.data_points = []
 
-    def get_data_points(self) -> list[DataPoint]:
+    def get_2d_data_points(self) -> list[DataPoint]:
+        raise NotImplementedError
+
+    def get_3d_data_points(self) -> list[DataPoint]:
         raise NotImplementedError
