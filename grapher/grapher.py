@@ -9,23 +9,31 @@ import numpy as np
 plt.rcParams.update({"font.size": 16})
 SIZE = 20
 
+
 class Grapher:
     """Graph the results from the simulations."""
 
-    def __init__(self, filename: str, xlabel: str = None, ylabel: str = None):
-        self.filename = filename
+    def __init__(
+        self,
+        data: str,
+        xlabel: str = None,
+        ylabel: str = None,
+        zlabel: str = None,
+        savefile: str = None,
+    ):
+        self.data = data
         self.xlabel = xlabel
         self.ylabel = ylabel
+        self.zlabel = zlabel
         self.fig = None
         self.ax = None
+        self.savefile = savefile
 
     def generate_errorbar(self) -> None:
-        data = self._get_data()
-
-        if data["simulation_parameter"]:
-            collator = OrderVsParamCollator(data)
+        if self.data["simulation_parameter"]:
+            collator = OrderVsParamCollator(self.data)
         else:
-            collator = OrderVsTimeCollator(data)
+            collator = OrderVsTimeCollator(self.data)
 
         plot_data = collator.get_2d_data_points()
         # TODO: Make more efficient, brain isn't working at the moment
@@ -37,42 +45,45 @@ class Grapher:
         self.ax.set_xlabel(self.xlabel)
         self.ax.set_ylabel(self.ylabel)
 
-    def generate_3d_contour(self) -> None:
-        data = self._get_data()
-
+    def generate_3d_contour(self, simulation_parameters) -> None:
         # Always should be order vs param
-        if data["simulation_parameter"]:
-            collator = OrderVsParamCollator(data)
-        else:
-            raise ValueError("Can only plot 3d contours when simulation_parameter is true in the data.")
-        
-        plot_data = collator.get_3d_data_points()
-        X = [data_point.x for data_point in plot_data]
-        Y = [data_point.y for data_point in plot_data]
-        Z = [data_point.z for data_point in plot_data]
+        # if self.data["simulation_parameter"]:
+        #     collator = OrderVsParamCollator(self.data)
+        # else:
+        #     raise ValueError("Can only plot 3d contours when simulation_parameter is true in the data.")
+        collator = OrderVsParamCollator(self.data)
 
-        X, Y = np.meshgrid(X, Y)
-        self.fig, self.ax = plt.subplots()
+        plot_data = collator.get_3d_data_points(simulation_parameters)
+        # xs = [data_point.x for data_point in plot_data]
+        # ys = [data_point.y for data_point in plot_data]
+        # zs = [data_point.z for data_point in plot_data]
 
-        surf = self.ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+        self.fig, self.ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+        xs = [data_point.x for data_point in plot_data]
+        ys = [data_point.y for data_point in plot_data]
+        zs = [data_point.z for data_point in plot_data]
+        # X, Y = np.meshgrid(xs, ys)
+        zs = np.array(zs)
+
+        # surf = self.ax.plot_trisurf(
+        #     xs, ys, zs, cmap=cm.coolwarm, linewidth=0.2, antialiased=True
+        # )
+        surf = self.ax.scatter(xs, ys, zs)
 
         # Customize the z axis.
         self.ax.zaxis.set_major_locator(LinearLocator(10))
         # A StrMethodFormatter is used automatically
-        self.ax.zaxis.set_major_formatter('{x:.02f}')
+        self.ax.zaxis.set_major_formatter("{x:.02f}")
 
         # Add a color bar which maps values to colors.
         self.fig.colorbar(surf, shrink=0.5, aspect=5)
-                
-
-    def _get_data(self):
-        with open(f"./data/{self.filename}", "r") as f:
-            data = json.load(f)
-
-        return data
+        self.ax.set_xlabel(self.xlabel)
+        self.ax.set_ylabel(self.ylabel)
+        self.ax.set_zlabel(self.zlabel)
 
     def save(self):
-        self.fig.savefig(f"./zfigures/{self.filename.split(".")[0]}.png")
+        self.fig.savefig(f"./zfigures/{self.savefile}")
 
     def show(self):
         plt.show()

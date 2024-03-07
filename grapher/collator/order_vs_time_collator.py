@@ -1,5 +1,5 @@
 from grapher.collator.data_collator import DataCollator
-from grapher.data_point.data_point import DataPoint
+from grapher.data_point.error_bar_point import ErrorBarPoint
 import numpy as np
 
 
@@ -18,7 +18,7 @@ class OrderVsTimeCollator(DataCollator):
             )
             self.data_points.append(
                 # append the time step, average values, and standard error of that value
-                DataPoint(
+                ErrorBarPoint(
                     t, np.mean(t_values), np.std(t_values) / np.sqrt(len(t_values))
                 )
             )
