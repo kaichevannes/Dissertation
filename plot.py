@@ -12,7 +12,10 @@ def plot(args):
                 print(f"opening ./data/{filenames[i]}")
                 data[args.simulationparameters[i]] = json.load(f)
         grapher = Grapher(data, args.xlabel, args.ylabel, args.zlabel, args.savefile)
-        grapher.generate_3d_contour(args.simulationparameters)
+        if args.multiline:
+            grapher.generate_multiline_plot(args.simulationparameters)
+        else:
+            grapher.generate_3d_contour(args.simulationparameters)
     else:
         with open(f"./data/{args.filename}", "r") as f:
             data = json.load(f)
@@ -39,6 +42,7 @@ if __name__ == "__main__":
     parser.add_argument("-af", "--additionalfiles", nargs="*")
     parser.add_argument("-sps", "--simulationparameters", nargs="*")
     parser.add_argument("-sf", "--savefile")
+    parser.add_argument("-ml", "--multiline", action="store_true")
     plot(parser.parse_args())
 
     # Example: python plot.py -f of0p0oe0to100.json -d -3d -af of0p1oe0to100.json of0p2oe0to100.json -sps 0.0 0.1 0.2 -x lambda -y "number of entities overriden" -z "distance to goal"

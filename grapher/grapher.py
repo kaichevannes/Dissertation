@@ -3,7 +3,7 @@ from grapher.collator.order_vs_param_collator import OrderVsParamCollator
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator
-import json
+from scipy.ndimage import gaussian_filter1d
 import numpy as np
 
 plt.rcParams.update({"font.size": 16})
@@ -46,30 +46,21 @@ class Grapher:
         self.ax.set_ylabel(self.ylabel)
 
     def generate_3d_contour(self, simulation_parameters) -> None:
-        # Always should be order vs param
-        # if self.data["simulation_parameter"]:
-        #     collator = OrderVsParamCollator(self.data)
-        # else:
-        #     raise ValueError("Can only plot 3d contours when simulation_parameter is true in the data.")
         collator = OrderVsParamCollator(self.data)
 
         plot_data = collator.get_3d_data_points(simulation_parameters)
-        # xs = [data_point.x for data_point in plot_data]
-        # ys = [data_point.y for data_point in plot_data]
-        # zs = [data_point.z for data_point in plot_data]
-
         self.fig, self.ax = plt.subplots(subplot_kw={"projection": "3d"})
 
         xs = [data_point.x for data_point in plot_data]
         ys = [data_point.y for data_point in plot_data]
         zs = [data_point.z for data_point in plot_data]
-        # X, Y = np.meshgrid(xs, ys)
         zs = np.array(zs)
+        # zs = gaussian_filter1d(zs, sigma=1)
 
-        # surf = self.ax.plot_trisurf(
-        #     xs, ys, zs, cmap=cm.coolwarm, linewidth=0.2, antialiased=True
-        # )
-        surf = self.ax.scatter(xs, ys, zs)
+        surf = self.ax.plot_trisurf(
+            xs, ys, zs, cmap=cm.coolwarm, linewidth=0.2, antialiased=True
+        )
+        # surf = self.ax.scatter(xs, ys, zs)
 
         # Customize the z axis.
         self.ax.zaxis.set_major_locator(LinearLocator(10))
@@ -81,6 +72,32 @@ class Grapher:
         self.ax.set_xlabel(self.xlabel)
         self.ax.set_ylabel(self.ylabel)
         self.ax.set_zlabel(self.zlabel)
+
+    def generate_multiline_plot(self, simulation_parameters) -> None:
+        collator = OrderVsParamCollator(self.data)
+
+        plot_data = collator.get_2d_data_points(simulation_parameters)
+        # xs = [data_point.x for data_point in plot_data]
+        # ys = [data_point.y for data_point in plot_data]
+        # zs = [data_point.z for data_point in plot_data]
+
+        self.fig, self.ax = plt.subplots()
+
+        for s in simulation_parameters:
+            xs = []
+            ys = []
+            yerrs = []
+            for data_point in plot_data:
+                if data_point.simulation_parameter == s:
+                    xs.append(data_point.x)
+                    ys.append(data_point.y)
+                    yerrs.append(data_point.yerr)
+            self.ax.scatter(xs, ys, label=s, s=4)
+            self.ax.errorbar(xs, ys, yerrs, fmt="none")
+
+        self.ax.set_xlabel(self.xlabel)
+        self.ax.set_ylabel(self.ylabel)
+        self.ax.legend(title=self.zlabel)
 
     def save(self):
         self.fig.savefig(f"./zfigures/{self.savefile}")

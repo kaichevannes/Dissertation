@@ -21,7 +21,11 @@ class MatplotlibVisualiser(Visualiser):
         if self.steps is None:
             raise LookupError("No max time step is assigned to this visualiser.")
         _ = animation.FuncAnimation(
-            self.fig, self.swarm.update_plot, frames=self.steps, repeat=False
+            self.fig,
+            self.swarm.update_plot,
+            frames=self.steps,
+            repeat=False,
+            interval=self.interval,
         )
         plt.show()
 
