@@ -70,6 +70,8 @@ class BoidSimulation(Simulation):
                 self.swarm.step()
             if self.swarm_adjuster is not None:
                 self.swarm_adjuster.adjust_swarm(self.swarm)
+            for entity in self.swarm.entities:
+                entity.time_step = 0
             for t in range(self.max_time_step - self.pre_simulation_steps):
                 if t % 100 == 0:
                     print(f"{threading.current_thread()}: t = {t}")
