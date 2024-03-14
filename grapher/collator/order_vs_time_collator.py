@@ -9,7 +9,7 @@ class OrderVsTimeCollator(DataCollator):
         self.data.pop("simulation_parameter")
 
         # Average the value at timestep t for every run of our data.
-        for t in range(len(self.data)):
+        for t in range(len(list(self.data.values())[0])):
             t_values = np.array(
                 [
                     order_parameter_values[str(t)]
