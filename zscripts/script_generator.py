@@ -16,7 +16,7 @@ for i in range(10):
             outfile.write("source activate myenv\n")
             outfile.write("module load openmpi/4.1.1/gcc\n")
             outfile.write(
-                f"mpirun -np 10 python main.py distancetogoal -of 0.{i} -oe {j} -sp {j} -p 300 -t {3000/(i+1)} -f of0p{i}oe0to100.json\n"
+                f"mpirun -np 10 python main.py distancetogoal -of 0.{i} -oe {j} -sp {j} -p 300 -t {max(3000 - 500 * i, 1000)} -f of0p{i}oe0to100.json\n"
             )
 
 for j in range(101):
@@ -34,5 +34,5 @@ for j in range(101):
         outfile.write("source activate myenv\n")
         outfile.write("module load openmpi/4.1.1/gcc\n")
         outfile.write(
-            f"mpirun -np 10 python main.py distancetogoal -of 1.0 -oe {j} -sp {j} -p 300 -t 300 -f of1p0oe0to100.json\n"
+            f"mpirun -np 10 python main.py distancetogoal -of 1.0 -oe {j} -sp {j} -p 300 -t 1000 -f of1p0oe0to100.json\n"
         )
