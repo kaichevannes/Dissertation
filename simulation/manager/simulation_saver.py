@@ -1,5 +1,6 @@
 from pathlib import Path
 import json
+from filelock import SoftFileLock, Timeout
 
 
 class SimulationSaver:
@@ -13,11 +14,13 @@ class SimulationSaver:
         self.using_simulation_parameter = simulation_parameter is not None
 
     def save(self) -> None:
-        """Save the file to ./data/filename"""
-        if Path(self.write_file).is_file():
-            self._save_existing()
-        else:
-            self._save_new()
+        """Save the file to ./data/filename, wait for file lock."""
+        lock = SoftFileLock(f"{self.write_file}.lock", timeout=180)
+        with lock:
+            if Path(self.write_file).is_file():
+                self._save_existing()
+            else:
+                self._save_new()
 
     def _save_existing(self) -> None:
         # Check if the existing file is using a simulation parameter or not

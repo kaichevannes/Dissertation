@@ -3,8 +3,13 @@ from grapher.collator.order_vs_param_collator import OrderVsParamCollator
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator
+from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter1d
+from scipy.ndimage import median_filter
 import numpy as np
+
+import seaborn as sns
+import pandas as pd
 
 plt.rcParams.update({"font.size": 16})
 SIZE = 20
@@ -49,29 +54,38 @@ class Grapher:
         collator = OrderVsParamCollator(self.data)
 
         plot_data = collator.get_3d_data_points(simulation_parameters)
-        self.fig, self.ax = plt.subplots(subplot_kw={"projection": "3d"})
+        # self.fig, self.ax = plt.subplots(subplot_kw={"projection": "3d"})
+        self.fig, self.ax = plt.subplots()
 
-        xs = [data_point.x for data_point in plot_data]
-        ys = [data_point.y for data_point in plot_data]
-        zs = [data_point.z for data_point in plot_data]
-        zs = np.array(zs)
+        xs = np.array([data_point.x for data_point in plot_data])
+        ys = np.array([data_point.y for data_point in plot_data])
+        zs = np.array([data_point.z for data_point in plot_data])
         # zs = gaussian_filter1d(zs, sigma=1)
+        # zs = median_filter(zs)
 
-        surf = self.ax.plot_trisurf(
-            xs, ys, zs, cmap=cm.coolwarm, linewidth=0.2, antialiased=True
+        data = pd.DataFrame({self.xlabel: xs, self.ylabel: ys, self.zlabel: zs})
+        data_pivoted = data.pivot(
+            index=self.xlabel, columns=self.ylabel, values=self.zlabel
         )
+        sns.heatmap(data_pivoted, ax=self.ax)
+        # df["Z_value"] = pd.to_numeric(df["Z_value"])
+        # pivotted = df.pivot("Y_value", "X_value", "Z_value")
+        # sns.heatmap(pivotted, ax=self.ax)
+        # surf = self.ax.plot_trisurf(
+        #     xs, ys, zs, cmap=cm.coolwarm, linewidth=0.2, antialiased=True
+        # )
         # surf = self.ax.scatter(xs, ys, zs)
 
         # Customize the z axis.
-        self.ax.zaxis.set_major_locator(LinearLocator(10))
+        # self.ax.zaxis.set_major_locator(LinearLocator(10))
         # A StrMethodFormatter is used automatically
-        self.ax.zaxis.set_major_formatter("{x:.02f}")
+        # self.ax.zaxis.set_major_formatter("{x:.02f}")
 
         # Add a color bar which maps values to colors.
-        self.fig.colorbar(surf, shrink=0.5, aspect=5)
-        self.ax.set_xlabel(self.xlabel)
-        self.ax.set_ylabel(self.ylabel)
-        self.ax.set_zlabel(self.zlabel)
+        # self.fig.colorbar(surf, shrink=0.5, aspect=5)
+        # self.ax.set_xlabel(self.xlabel)
+        # self.ax.set_ylabel(self.ylabel)
+        # self.ax.set_zlabel(self.zlabel)
 
     def generate_multiline_plot(self, simulation_parameters) -> None:
         collator = OrderVsParamCollator(self.data)
