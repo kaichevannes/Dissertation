@@ -1,1 +1,2 @@
 find ./of0p0 -maxdepth 1 -type f -exec sbatch --output=/dev/null {} \;
+squeue -u kc2g21 -h -t pending,running -r -O "state" | uniq -c

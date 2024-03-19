@@ -7,6 +7,7 @@ from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter1d
 from scipy.ndimage import median_filter
 import numpy as np
+from scipy.interpolate import griddata
 
 import seaborn as sns
 import pandas as pd
@@ -58,7 +59,7 @@ class Grapher:
         self.fig, self.ax = plt.subplots()
 
         xs = np.array([data_point.x for data_point in plot_data])
-        ys = np.array([data_point.y for data_point in plot_data])
+        ys = np.array([int(data_point.y) for data_point in plot_data])
         zs = np.array([data_point.z for data_point in plot_data])
         # zs = gaussian_filter1d(zs, sigma=1)
         # zs = median_filter(zs)
@@ -67,7 +68,31 @@ class Grapher:
         data_pivoted = data.pivot(
             index=self.xlabel, columns=self.ylabel, values=self.zlabel
         )
-        sns.heatmap(data_pivoted, ax=self.ax)
+        sns.heatmap(
+            data_pivoted,
+            ax=self.ax,
+            cmap="magma",
+            cbar_kws={"label": self.zlabel},
+        )
+
+        # sns.kdeplot(x=data[self.ylabel], y=data[self.zlabel])
+
+        self.ax.tricontour(
+            ys,
+            (xs * 10) + 0.5,
+            zs,
+            colors="white",
+            levels=2,
+        )
+        # self.ax.tricontour(ys, xs, zs)
+
+        # X, Y = np.meshgrid(xs, ys)
+        # Z = griddata((xs, ys), zs, (X, Y), method="nearest")
+        # self.ax.contour(
+        #     X,
+        #     Y,
+        #     Z,
+        # )
         # df["Z_value"] = pd.to_numeric(df["Z_value"])
         # pivotted = df.pivot("Y_value", "X_value", "Z_value")
         # sns.heatmap(pivotted, ax=self.ax)

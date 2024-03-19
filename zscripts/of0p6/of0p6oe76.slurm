@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --ntasks=10
+#SBATCH --ntasks=30
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=10
+#SBATCH --ntasks-per-node=30
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:30:00
 cd /lyceum/kc2g21/Dissertation
 module load conda
 source activate myenv
 module load openmpi/4.1.1/gcc
-mpirun -np 10 python main.py distancetogoal -of 0.6 -oe 76 -sp 76 -p 300 -t 1000 -f of0p6oe0to100.json
+mpirun -np 30 python main.py distancetogoal -of 0.6 -oe 76 -sp 76 -p 300 -t 1000 -f of0p6oe0to100.json
