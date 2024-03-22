@@ -10,12 +10,16 @@ class OrderVsTimeCollator(DataCollator):
 
         # Average the value at timestep t for every run of our data.
         for t in range(len(list(self.data.values())[0])):
-            t_values = np.array(
-                [
-                    order_parameter_values[str(t)]
-                    for order_parameter_values in self.data.values()
-                ]
-            )
+            try:
+                t_values = np.array(
+                    [
+                        order_parameter_values[str(t)]
+                        for order_parameter_values in self.data.values()
+                    ]
+                )
+            except:
+                # Index doesnt exist, rotation case, bleh
+                continue
             self.data_points.append(
                 # append the time step, average values, and standard error of that value
                 ErrorBarPoint(

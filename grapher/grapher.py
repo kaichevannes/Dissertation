@@ -71,7 +71,7 @@ class Grapher:
         sns.heatmap(
             data_pivoted,
             ax=self.ax,
-            cmap="magma",
+            cmap="binary",
             cbar_kws={"label": self.zlabel},
         )
 
@@ -81,7 +81,7 @@ class Grapher:
             ys,
             (xs * 10) + 0.5,
             zs,
-            colors="white",
+            colors="black",
             levels=2,
         )
         # self.ax.tricontour(ys, xs, zs)
@@ -139,7 +139,7 @@ class Grapher:
         self.ax.legend(title=self.zlabel)
 
     def save(self):
-        self.fig.savefig(f"./zfigures/{self.savefile}")
+        self.fig.savefig(f"./zfigures/{self.savefile}", bbox_inches="tight")
 
     def show(self):
         plt.show()
