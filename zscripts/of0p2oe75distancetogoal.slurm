@@ -10,7 +10,7 @@
 #SBATCH --nodes=1     # Number of nodes requested
 #SBATCH --ntasks-per-node=40     # Tasks per node
 #SBATCH --cpus-per-task=1     # Threads per task
-#SBATCH --time=00:60:00   # walltime
+#SBATCH --time=03:00:00   # walltime
 
 cd /lyceum/kc2g21/Dissertation
 
@@ -19,4 +19,4 @@ source activate myenv
 
 module load openmpi/4.1.1/gcc
 
-mpirun -np 40 python main.py distancetogoal -of 0.2 -oe 75 -p 500 -t 5500 -f of0p2oe75distancetogoal.json
+mpirun -np 40 python main.py distancetogoal -of 0.2 -oe 75 -p 500 -t 20500 -f of0p2oe75distancetogoal.json

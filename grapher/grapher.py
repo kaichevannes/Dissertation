@@ -26,6 +26,7 @@ class Grapher:
         ylabel: str = None,
         zlabel: str = None,
         savefile: str = None,
+        range: int = None,
     ):
         self.data = data
         self.xlabel = xlabel
@@ -34,6 +35,7 @@ class Grapher:
         self.fig = None
         self.ax = None
         self.savefile = savefile
+        self.range = range
 
     def generate_errorbar(self) -> None:
         if self.data["simulation_parameter"]:
@@ -47,7 +49,22 @@ class Grapher:
         ys = [data_point.y for data_point in plot_data]
         yerrs = [data_point.yerr for data_point in plot_data]
         self.fig, self.ax = plt.subplots()
-        self.ax.errorbar(xs, ys, yerr=yerrs)
+        if self.range is None:
+            ts = len(list(self.data.values())[0])
+        else:
+            ts = self.range
+            xs = xs[: self.range]
+            ys = ys[: self.range]
+            yerrs = yerrs[: self.range]
+
+        self.ax.errorbar(
+            xs,
+            ys,
+            yerr=yerrs,
+            errorevery=max(int(ts * 0.01), 1),
+            capsize=2,
+            elinewidth=1,
+        )
         self.ax.set_xlabel(self.xlabel)
         self.ax.set_ylabel(self.ylabel)
 
