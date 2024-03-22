@@ -8,4 +8,4 @@ cd /lyceum/kc2g21/Dissertation
 module load conda
 source activate myenv
 module load openmpi/4.1.1/gcc
-mpirun -np 10 python main.py distancetogoal -of 0.5 -oe 31 -sp 31 -p 300 -t 6277 -f of0p5oe0to100.json
+mpirun -np 10 python main.py distancetogoal -of 0.5 -oe 31 -sp 31 -p 300 -t 7011 -f of0p5oe0to100.json
