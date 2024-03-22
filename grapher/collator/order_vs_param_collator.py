@@ -26,10 +26,10 @@ class OrderVsParamCollator(DataCollator):
                 total_average = []
                 # will have n number of parameter_data runs
                 for run in parameter_data.values():
-                    # We want to get the average of the last 500 runs of each of the runs
+                    # We want to get the average of the last 300 time steps of each of the runs
                     values = list(run.values())
-                    last_500_runs = np.array(values[-500:])
-                    total_average.append(np.mean(last_500_runs))
+                    last_300_runs = np.array(values[-300:])
+                    total_average.append(np.mean(last_300_runs))
 
                 # print(f"total average for y = {y}: {total_average}")
 
