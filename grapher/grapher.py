@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator
 from scipy.interpolate import griddata
-from scipy.ndimage import gaussian_filter1d
+from scipy.ndimage.filters import gaussian_filter
 from scipy.ndimage import median_filter
 import numpy as np
 from scipy.interpolate import griddata
@@ -80,13 +80,17 @@ class Grapher:
         zs = np.array([data_point.z for data_point in plot_data])
         # zs = gaussian_filter1d(zs, sigma=1)
         # zs = median_filter(zs)
+        # zs = gaussian_filter(zs, sigma=2)
 
         data = pd.DataFrame({self.xlabel: xs, self.ylabel: ys, self.zlabel: zs})
+
         data_pivoted = data.pivot(
             index=self.xlabel, columns=self.ylabel, values=self.zlabel
         )
         sns.heatmap(
             data_pivoted,
+            vmin=np.min(zs),
+            vmax=np.max(zs),
             ax=self.ax,
             cmap="binary",
             cbar_kws={"label": self.zlabel},
@@ -94,13 +98,13 @@ class Grapher:
 
         # sns.kdeplot(x=data[self.ylabel], y=data[self.zlabel])
 
-        self.ax.tricontour(
-            ys,
-            (xs * 10) + 0.5,
-            zs,
-            colors="black",
-            levels=2,
-        )
+        # self.ax.tricontour(
+        #     ys,
+        #     (xs * 10) + 0.5,
+        #     zs,
+        #     colors="black",
+        #     levels=2,
+        # )
         # self.ax.tricontour(ys, xs, zs)
 
         # X, Y = np.meshgrid(xs, ys)
