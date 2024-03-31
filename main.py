@@ -28,7 +28,18 @@ def main(args):
     boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
 
     # BoidSimulationOptions
-    simulation_options = BoidSimulationOptions(boid_swarm_adjuster=boid_swarm_adjuster)
+    if args.radiusmultiplier is not None:
+        simulation_options = BoidSimulationOptions(
+            boid_swarm_adjuster=boid_swarm_adjuster,
+            radius_multiplier=args.radiusmultiplier,
+        )
+    else:
+        simulation_options = BoidSimulationOptions(
+            boid_swarm_adjuster=boid_swarm_adjuster
+        )
+
+    if args.overridefraction is None and args.overrideentities is None:
+        simulation_options.boid_swarm_adjuster = None
 
     if args.simulationparameter is not None:
         simulation_options.simulation_parameter = args.simulationparameter
@@ -113,4 +124,5 @@ if __name__ == "__main__":
             "none",
         ],
     )
+    parser.add_argument("-k", "--radiusmultiplier", type=float)
     main(parser.parse_args())
