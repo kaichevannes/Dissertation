@@ -55,11 +55,6 @@ class BoidSimulation(Simulation):
         # TODO: Make this a parameter
         self.swarm.set_goal_position(np.array([self.grid_size / 2, self.grid_size / 2]))
 
-        if self.pre_simulation_steps > self.max_time_step:
-            raise ValueError(
-                "Pre simulation steps cannot be greater than the max time step."
-            )
-
     def run(self) -> SimulationResult:
         """Run this simulation from start to finish."""
         if self.visualiser is None:
