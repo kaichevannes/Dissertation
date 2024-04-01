@@ -56,7 +56,7 @@ for i in range(10):
             outfile.write("source activate myenv\n")
             outfile.write("module load openmpi/4.1.1/gcc\n")
             outfile.write(
-                f"mpirun -np 10 python main.py distancetogoal -of 0.{i} -oe {j} -sp {j} -p 2000 -t {ofs[2*i][j]} -f of0p{i}oe0to100.json\n"
+                f"mpirun -np 10 python main.py distancetogoal -k 3.5 -of 0.{i} -oe {j} -sp {j} -p 2000 -t {ofs[2*i][j]} -f of0p{i}oe0to100.json\n"
             )
 
 for i in range(10):
@@ -80,10 +80,9 @@ for i in range(10):
             outfile.write("source activate myenv\n")
             outfile.write("module load openmpi/4.1.1/gcc\n")
             outfile.write(
-                f"mpirun -np 10 python main.py distancetogoal -of 0.{formatted_new_i} -oe {j} -sp {j} -p 2000 -t {ofs[(2 * i) + 1][j]} -f of0p{formatted_new_i}oe0to100.json\n"
+                f"mpirun -np 10 python main.py distancetogoal -k 3.5 -of 0.{formatted_new_i} -oe {j} -sp {j} -p 2000 -t {ofs[(2 * i) + 1][j]} -f of0p{formatted_new_i}oe0to100.json\n"
             )
 
-print(ofs[20])
 for j in range(101):
     if not os.path.isdir("of1p0"):
         os.mkdir("of1p0")
@@ -99,5 +98,5 @@ for j in range(101):
         outfile.write("source activate myenv\n")
         outfile.write("module load openmpi/4.1.1/gcc\n")
         outfile.write(
-            f"mpirun -np 10 python main.py distancetogoal -of 1.0 -oe {j} -sp {j} -p 2000 -t {ofs[20][j]} -f of1p0oe0to100.json\n"
+            f"mpirun -np 10 python main.py distancetogoal -k 3.5 -of 1.0 -oe {j} -sp {j} -p 2000 -t {ofs[20][j]} -f of1p0oe0to100.json\n"
         )
