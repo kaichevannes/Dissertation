@@ -6,6 +6,7 @@ from matplotlib.path import Path
 import numpy as np
 import networkx as nx
 import math
+import os
 
 
 class Swarm:
@@ -27,6 +28,7 @@ class Swarm:
             self.swarm_size = swarm_size
             self.entity_factory = entity_factory
         self.entities = entities
+        self.save_interval = None  # for getting visualisation images, sue me
 
     def __str__(self) -> str:
         """Convert this swarm into a human-readable string.
@@ -103,6 +105,10 @@ class Swarm:
 
         self.update_markers()
 
+    def initialise_saving(self, save_interval: int, savefolder: str):
+        self.save_interval = save_interval
+        self.savefolder = savefolder
+
     def set_end_frame(self, end_frame: int):
         self.end_frame = end_frame
 
@@ -119,8 +125,14 @@ class Swarm:
 
         self.sc.set_offsets(np.c_[positions[:, 0], positions[:, 1]])
         self.ax.set_title(f"t = {frame}")
-        # if frame % 250 == 0:
-        #     input()
+        if self.save_interval is not None:
+            if frame % self.save_interval == 0:
+                if not os.path.isdir(f"./zfigures/visualiser/{self.savefolder}"):
+                    os.mkdir(f"./zfigures/visualiser/{self.savefolder}")
+                plt.savefig(
+                    f"./zfigures/visualiser/{self.savefolder}/t{frame}",
+                    bbox_inches="tight",
+                )
 
         # self.update_colours()
         self.update_override_colours()

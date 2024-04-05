@@ -58,7 +58,9 @@ def main(args):
 
     # Visualisation
     if args.visualise:
-        simulation_options.visualiser = MatplotlibVisualiser(slow=args.slow)
+        simulation_options.visualiser = MatplotlibVisualiser(
+            slow=args.slow, save_interval=args.saveinterval, savefolder=args.savefolder
+        )
         num_runs = 1
 
     # Order parameter
@@ -125,4 +127,6 @@ if __name__ == "__main__":
         ],
     )
     parser.add_argument("-k", "--radiusmultiplier", type=float)
+    parser.add_argument("-si", "--saveinterval", type=int)
+    parser.add_argument("-sf", "--savefolder")
     main(parser.parse_args())

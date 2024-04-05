@@ -10,7 +10,9 @@ class Visualiser:
     from the visual output and allowing for different implementations of visualisation.
     """
 
-    def __init__(self, slow: bool = False):
+    def __init__(
+        self, slow: bool = False, save_interval: int = None, savefolder: str = None
+    ):
         """Visualiser constructor.
 
         Args:
@@ -20,6 +22,9 @@ class Visualiser:
             self.interval = VISUALISATION_SLOW
         else:
             self.interval = VISUALISATION_REAL_TIME
+
+        self.save_interval = save_interval
+        self.savefolder = savefolder
 
     def set_swarm(self, swarm: Swarm):
         """Set the swarm to be visualised.

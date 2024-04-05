@@ -20,6 +20,8 @@ class MatplotlibVisualiser(Visualiser):
         # TODO: Decouple this visualuser from the swarm function somehow.
         if self.steps is None:
             raise LookupError("No max time step is assigned to this visualiser.")
+        if self.save_interval is not None:
+            self.swarm.initialise_saving(self.save_interval, self.savefolder)
         _ = animation.FuncAnimation(
             self.fig,
             self.swarm.update_plot,
