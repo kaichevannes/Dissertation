@@ -22,6 +22,8 @@ class MatplotlibVisualiser(Visualiser):
             raise LookupError("No max time step is assigned to this visualiser.")
         if self.save_interval is not None:
             self.swarm.initialise_saving(self.save_interval, self.savefolder)
+        if self.adjuster is not None:
+            self.swarm.initialise_continuous_adjustment(self.adjuster)
         _ = animation.FuncAnimation(
             self.fig,
             self.swarm.update_plot,

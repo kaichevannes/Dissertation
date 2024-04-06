@@ -7,6 +7,10 @@ import numpy as np
 import networkx as nx
 import math
 import os
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from swarm.adjuster.boid_swarm_adjuster import BoidSwarmAdjuster
 
 
 class Swarm:
@@ -29,6 +33,7 @@ class Swarm:
             self.entity_factory = entity_factory
         self.entities = entities
         self.save_interval = None  # for getting visualisation images, sue me
+        self.adjuster = None  # /shrug
 
     def __str__(self) -> str:
         """Convert this swarm into a human-readable string.
@@ -109,6 +114,9 @@ class Swarm:
         self.save_interval = save_interval
         self.savefolder = savefolder
 
+    def initialise_continuous_adjustment(self, adjuster: "BoidSwarmAdjuster"):
+        self.adjuster = adjuster
+
     def set_end_frame(self, end_frame: int):
         self.end_frame = end_frame
 
@@ -139,6 +147,10 @@ class Swarm:
 
         # print(f"boid_colours = {boid_colours}")
         self.update_markers()
+
+        if self.adjuster is not None:
+            print("Adjusting swarm")
+            self.adjuster.adjust_swarm(self)
 
     def update_markers(self):
         """Update the markers for the graph at this time step."""

@@ -25,6 +25,10 @@ class Visualiser:
 
         self.save_interval = save_interval
         self.savefolder = savefolder
+        self.adjuster = None
+
+    def set_continuous_adjuster(self, adjuster):
+        self.adjuster = adjuster
 
     def set_swarm(self, swarm: Swarm):
         """Set the swarm to be visualised.

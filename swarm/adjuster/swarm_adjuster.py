@@ -4,6 +4,9 @@ from collections.abc import Callable
 
 class SwarmAdjuster:
 
+    def __init__(self, continuous: bool = False):
+        self.continuous = continuous
+
     def set_strategy(self, strategy: Callable[[], None]):
         """Set the strategy for this adjuster.
 

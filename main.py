@@ -34,6 +34,9 @@ def main(args):
     # boid_swarm_adjuster.set_velocity_multiplier(1.1)
     # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_velocity)
 
+    # boid_swarm_adjuster.continuous = True
+    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_from_edge)
+
     # BoidSimulationOptions
     if args.radiusmultiplier is not None:
         simulation_options = BoidSimulationOptions(
@@ -103,7 +106,6 @@ def main(args):
     simulation_manager = BoidSimulationManager(
         order_parameter_manager, simulation_options, num_runs=num_runs
     )
-    print(order_parameter_manager.order_parameters)
     simulation_manager.run_all()
 
     # Saving
