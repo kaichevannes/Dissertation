@@ -81,6 +81,7 @@ class Boid(Entity):
             self._flock_centering_weighting = 0
         self._noise_fraction = noise_fraction
         self.override_fraction = override_fraction
+        self.velocity_multiplier = 1
 
     def __deepcopy__(self, memo=None) -> "Boid":
         """Create a copy of this boid.
@@ -183,7 +184,9 @@ class Boid(Entity):
         """
         self._update_acceleration(swarm)
         updated_velocity = self.velocity + self.acceleration
-        self.velocity = updated_velocity / np.linalg.norm(updated_velocity)
+        self.velocity = self.velocity_multiplier * (
+            updated_velocity / np.linalg.norm(updated_velocity)
+        )
 
     def _update_acceleration(self, swarm: Swarm) -> None:
         """Update the acceleration of this boid based on the three boid rules: Collision avoidance, Velocity matching, Flock centering.
@@ -288,6 +291,10 @@ class Boid(Entity):
                 total_distance,
                 neighbour.position,
             )
+
+        if np.array_equal(total_distance, np.array([0, 0])):
+            # no neighbours so ignore this rule
+            return 0, neighbours
 
         normalised_distance = total_distance / np.max([len(neighbours), 1])
 

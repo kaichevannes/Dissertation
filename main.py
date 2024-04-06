@@ -25,7 +25,13 @@ def main(args):
     else:
         boid_swarm_adjuster.set_num_entities(50)
 
-    boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
+    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
+
+    boid_swarm_adjuster.set_k(5.5)
+    boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_radius)
+
+    # boid_swarm_adjuster.set_velocity_multiplier(1.5)
+    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_velocity)
 
     # BoidSimulationOptions
     if args.radiusmultiplier is not None:
@@ -51,6 +57,9 @@ def main(args):
 
     if args.maxtimestep is not None:
         simulation_options.max_time_step = args.maxtimestep
+
+    if args.noisefraction is not None:
+        simulation_options.noise_fraction = args.noisefraction
 
     # Number of runs
     comm = MPI.COMM_WORLD
@@ -129,4 +138,5 @@ if __name__ == "__main__":
     parser.add_argument("-k", "--radiusmultiplier", type=float)
     parser.add_argument("-si", "--saveinterval", type=int)
     parser.add_argument("-sf", "--savefolder")
+    parser.add_argument("-nf", "--noisefraction", type=float)
     main(parser.parse_args())
