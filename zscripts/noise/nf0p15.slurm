@@ -8,4 +8,4 @@ cd /lyceum/kc2g21/Dissertation
 module load conda
 source activate myenv
 module load openmpi/4.1.1/gcc
-mpirun -np 10 python main.py distancetogoal -k 3.5 -nf 0.15 -sp 0.15 -t 2500 -f noise.json
+mpirun -np 10 python main.py distancetogoal -k 3.5 -nf 0.15 -sp 0.15 -p 0 -t 5000 -f noise.json
