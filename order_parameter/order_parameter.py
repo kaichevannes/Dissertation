@@ -16,6 +16,14 @@ class OrderParameter:
         """
         self.swarm = swarm
 
+    def get_name(self) -> str:
+        """Get the name of this order parameter
+
+        Raises:
+            NotImplementedError: if not implemented
+        """
+        raise NotImplementedError
+
     def calculate(self) -> float:
         """Calculate this order parameter on the current state of the swarm.
 

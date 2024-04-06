@@ -57,7 +57,7 @@ class BoidSwarmAdjuster(SwarmAdjuster):
         if self.k is None:
             raise LookupError("k must be set.")
         for entity in swarm.entities[: self.n]:
-            # entity.override_fraction = self.override_fraction
+            entity.override_fraction = self.override_fraction
             entity._collision_avoidance_radius = (
                 COLLISION_AVOIDANCE_RADIUS_SCALAR * self.k
             )

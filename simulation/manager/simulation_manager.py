@@ -1,5 +1,7 @@
 from simulation.options.simulation_options import SimulationOptions
-from order_parameter.order_parameter import OrderParameter
+
+# from order_parameter.order_parameter import OrderParameter
+from order_parameter.manager.order_parameter_manager import OrderParameterManager
 
 
 class SimulationManager:
@@ -12,7 +14,7 @@ class SimulationManager:
 
     def __init__(
         self,
-        order_parameter: OrderParameter,
+        order_parameter_manager: OrderParameterManager,
         simulation_options: SimulationOptions,
         num_runs: int,
     ):
@@ -35,7 +37,7 @@ class SimulationManager:
         # In this case then 2 factory methods should probably be used for each case.
 
         # The default case is just measuring an order parameter over time.
-        self.order_parameter = order_parameter
+        self.order_parameter_manager = order_parameter_manager
         self.simulation_options = simulation_options
         self.num_runs = num_runs
         self.simulation_results = []

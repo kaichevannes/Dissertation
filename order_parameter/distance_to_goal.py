@@ -20,3 +20,6 @@ class DistanceToGoal(OrderParameter):
             total_distance += np.linalg.norm(goal_position - entity.position)
 
         return total_distance / len(entities)
+
+    def get_name(self) -> str:
+        return "distancetogoal"

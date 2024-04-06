@@ -5,9 +5,12 @@ class SimulationResult:
     """The simulation result class is used to handle the results from a simulation.
     This is generic to allow for different handling of the results."""
 
-    def __init__(self, simulation_parameter_value=None) -> None:
+    def __init__(
+        self, order_parameter_name: str, simulation_parameter_value=None
+    ) -> None:
         """Initialise results to be an empty dict."""
         self.results = {}
+        self.order_parameter_name = order_parameter_name
         self.simulation_parameter_value = simulation_parameter_value
 
     def add_result(self, timestep: int, result: float) -> None:

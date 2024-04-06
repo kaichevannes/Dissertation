@@ -1,4 +1,5 @@
-from order_parameter.order_parameter import OrderParameter
+# from order_parameter.order_parameter import OrderParameter
+from order_parameter.manager.order_parameter_manager import OrderParameterManager
 from simulation.options.boid_simulation_options import BoidSimulationOptions
 from simulation.manager.simulation_manager import SimulationManager
 from simulation.boid_simulation import BoidSimulation
@@ -13,7 +14,7 @@ class BoidSimulationManager(SimulationManager):
 
     def __init__(
         self,
-        order_parameter: OrderParameter = None,
+        order_parameter_manager: OrderParameterManager = None,
         simulation_options: BoidSimulationOptions = BoidSimulationOptions(),
         num_runs: int = 10,
     ):
@@ -22,7 +23,7 @@ class BoidSimulationManager(SimulationManager):
             order_parameter (OrderParameter, optional): the order parameter that is used to evaluate the swarm. Defaults to None.
             simulation_options (BoidSimulationOptions, optional): the options for the simulation. Defaults to BoidSimulationOptions().
         """
-        super().__init__(order_parameter, simulation_options, num_runs)
+        super().__init__(order_parameter_manager, simulation_options, num_runs)
 
         # Maybe set a simulation per order parameter in the order parameter manager?
         # This is a very wasteful approach
@@ -55,21 +56,32 @@ class BoidSimulationManager(SimulationManager):
             comm.send(data, dest=0)
             sys.exit()
 
-    def _run_one(self) -> SimulationResult:
-        simulation = BoidSimulation(self.simulation_options, self.order_parameter)
+    def _run_one(self) -> list[SimulationResult]:
+        simulation = BoidSimulation(
+            self.simulation_options, self.order_parameter_manager
+        )
         return simulation.run()
 
     def save_to_file(self, filename):
-        simulation_dict = {}
-        for i in range(len(self.simulation_results)):
-            simulation_dict[i] = self.simulation_results[i].get_results()
+        for order_parameter_i in range(len(self.simulation_results[0])):
+            simulation_dict = {}
+            for i in range(len(self.simulation_results)):
+                simulation_dict[i] = self.simulation_results[i][
+                    order_parameter_i
+                ].get_results()
 
-        simulation_parameter = self.simulation_options.simulation_parameter
+            simulation_parameter = self.simulation_options.simulation_parameter
 
-        simulation_saver = SimulationSaver(
-            filename, simulation_dict, simulation_parameter
-        )
-        simulation_saver.save()
+            simulation_saver = SimulationSaver(
+                filename.split(".")[0]
+                + "-"
+                + self.simulation_results[0][order_parameter_i].order_parameter_name
+                + "."
+                + filename.split(".")[1],
+                simulation_dict,
+                simulation_parameter,
+            )
+            simulation_saver.save()
 
         # using_simulation_parameters = simulation_parameter is not None
 

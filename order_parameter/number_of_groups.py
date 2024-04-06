@@ -36,3 +36,6 @@ class NumberOfGroups(OrderParameter):
         for _ in groups:
             num_groups += 1
         return num_groups
+
+    def get_name(self) -> str:
+        return "numberofgroups"

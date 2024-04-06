@@ -26,3 +26,6 @@ class Visceks(OrderParameter):
             )
 
         return np.linalg.norm(total_normalised_velocity) / len(entities)
+
+    def get_name(self) -> str:
+        return "visceks"

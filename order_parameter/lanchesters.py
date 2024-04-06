@@ -37,3 +37,6 @@ class Lanchesters(OrderParameter):
 
         lanchesters_index = (1 / len(entities) ** 2) * group_sizes_squared
         return lanchesters_index
+
+    def get_name(self) -> str:
+        return "lanchesters"

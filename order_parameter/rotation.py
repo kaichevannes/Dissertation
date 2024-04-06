@@ -54,3 +54,6 @@ class Rotation(OrderParameter):
 
         self.velocities = self.velocities[1:]
         return total_global_velocity_difference / len(entities)
+
+    def get_name(self) -> str:
+        return "rotation"

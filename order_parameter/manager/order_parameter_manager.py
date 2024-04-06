@@ -1,4 +1,5 @@
 from order_parameter.order_parameter import OrderParameter
+from swarm.swarm import Swarm
 
 
 class OrderParameterManager:
@@ -16,21 +17,19 @@ class OrderParameterManager:
         Raises:
             ValueError: if this order parameter has already been added
         """
-        for existing_order_parameter in self.order_parameters:
-            if isinstance(existing_order_parameter, order_parameter_to_add):
-                raise ValueError(
-                    f"Cannot add another order parameter of type {type(order_parameter_to_add)}"
-                )
-
+        # for existing_order_parameter in self.order_parameters:
+        #     if isinstance(existing_order_parameter, order_parameter_to_add):
+        #         raise ValueError(
+        #             f"Cannot add another order parameter of type {type(order_parameter_to_add)}"
+        #         )
+        #     else:
         self.order_parameters.append(order_parameter_to_add)
 
-    def evaluate_all(self) -> dict[str, float]:
-        """Evaluate all of the order parameters that this class is managing.
+    def set_swarm(self, swarm: Swarm):
+        """Set the swarm for this order parameter manager.
 
-        Returns:
-            dict[str, float]: a dictionary of type to evaluation value
+        Args:
+            swarm (Swarm): the swarm that will be evaluated
         """
-        result = {}
         for order_parameter in self.order_parameters:
-            result[type(order_parameter)] = order_parameter.evaluate()
-        return result
+            order_parameter.set_swarm(swarm)

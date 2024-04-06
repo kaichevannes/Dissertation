@@ -7,6 +7,7 @@ from order_parameter.lanchesters import Lanchesters
 from order_parameter.number_of_groups import NumberOfGroups
 from order_parameter.rotation import Rotation
 from order_parameter.distance_to_goal import DistanceToGoal
+from order_parameter.manager.order_parameter_manager import OrderParameterManager
 import argparse
 from mpi4py import MPI
 
@@ -25,12 +26,12 @@ def main(args):
     else:
         boid_swarm_adjuster.set_num_entities(50)
 
-    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
+    boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
 
-    boid_swarm_adjuster.set_k(5.5)
-    boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_radius)
+    # boid_swarm_adjuster.set_k(5.5)
+    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_radius)
 
-    # boid_swarm_adjuster.set_velocity_multiplier(1.5)
+    # boid_swarm_adjuster.set_velocity_multiplier(1.1)
     # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_velocity)
 
     # BoidSimulationOptions
@@ -73,24 +74,36 @@ def main(args):
         num_runs = 1
 
     # Order parameter
-    match args.order_parameter:
-        case "visceks":
-            order_parameter = Visceks()
-        case "lanchesters":
-            order_parameter = Lanchesters()
-        case "groups":
-            order_parameter = NumberOfGroups()
-        case "rotation":
-            order_parameter = Rotation()
-        case "distancetogoal":
-            order_parameter = DistanceToGoal()
-        case _:
-            order_parameter = None
+    if args.order_parameter == "none":
+        order_parameter_manager = None
+    else:
+        order_parameter_manager = OrderParameterManager()
+        if args.additionalparameters is None:
+            all_order_parameters = [args.order_parameter]
+        else:
+            all_order_parameters = [args.order_parameter] + args.additionalparameters
+        print(all_order_parameters)
+        for order_parameter in all_order_parameters:
+            match order_parameter:
+                case "visceks":
+                    current_order_parameter = Visceks()
+                case "lanchesters":
+                    current_order_parameter = Lanchesters()
+                case "groups":
+                    current_order_parameter = NumberOfGroups()
+                case "rotation":
+                    current_order_parameter = Rotation()
+                case "distancetogoal":
+                    current_order_parameter = DistanceToGoal()
+                case _:
+                    current_order_parameter = None
+            order_parameter_manager.add_order_parameter(current_order_parameter)
 
     # BoidSimulationManager
     simulation_manager = BoidSimulationManager(
-        order_parameter, simulation_options, num_runs=num_runs
+        order_parameter_manager, simulation_options, num_runs=num_runs
     )
+    print(order_parameter_manager.order_parameters)
     simulation_manager.run_all()
 
     # Saving
@@ -139,4 +152,5 @@ if __name__ == "__main__":
     parser.add_argument("-si", "--saveinterval", type=int)
     parser.add_argument("-sf", "--savefolder")
     parser.add_argument("-nf", "--noisefraction", type=float)
+    parser.add_argument("-aps", "--additionalparameters", nargs="*")
     main(parser.parse_args())
