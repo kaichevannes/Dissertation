@@ -18,5 +18,5 @@ for nf in noise:
         outfile.write("source activate myenv\n")
         outfile.write("module load openmpi/4.1.1/gcc\n")
         outfile.write(
-            f"mpirun -np 10 python main.py distancetogoal -k 3.5 -oe 0 -of 0 -nf {normal_version} -sp {normal_version} -p 0 -t 5000 -f noise.json\n"
+            f"mpirun -np 10 python main.py visceks -aps lanchesters -k 3.5 -oe 0 -of 0 -nf {normal_version} -sp {normal_version} -p 0 -t 5000 -f noise.json\n"
         )
