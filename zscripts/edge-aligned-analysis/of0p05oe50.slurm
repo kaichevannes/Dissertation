@@ -19,4 +19,4 @@ source activate myenv
 
 module load openmpi/4.1.1/gcc
 
-mpirun -np 40 python main.py distancetogoal -of 0.05 -oe 1 -k 3.5 -p 2000 -t 20000 -f of0p05oe1distancetogoal.json
+mpirun -np 40 python main.py distancetogoal -aps visceks rotation lanchesters -of 0.05 -oe 50 -k 3.5 -p 2000 -t 20000 -f of0p05oe50.json

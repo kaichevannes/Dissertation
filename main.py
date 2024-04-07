@@ -26,7 +26,7 @@ def main(args):
     else:
         boid_swarm_adjuster.set_num_entities(50)
 
-    boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
+    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
 
     # boid_swarm_adjuster.set_k(5.5)
     # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_radius)
@@ -34,8 +34,8 @@ def main(args):
     # boid_swarm_adjuster.set_velocity_multiplier(1.1)
     # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_velocity)
 
-    # boid_swarm_adjuster.continuous = True
-    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_from_edge)
+    boid_swarm_adjuster.continuous = True
+    boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_from_edge)
 
     # BoidSimulationOptions
     if args.radiusmultiplier is not None:
