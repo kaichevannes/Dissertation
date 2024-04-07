@@ -18,5 +18,5 @@ for r in radius:
         outfile.write("source activate myenv\n")
         outfile.write("module load openmpi/4.1.1/gcc\n")
         outfile.write(
-            f"mpirun -np 10 python main.py visceks -oe 0 -of 0 -k {normal_version} -sp {normal_version} -aps rotation lanchesters numberofgroups -p 0 -t 5000 -f radius.json\n"
+            f"mpirun -np 10 python main.py visceks -oe 0 -of 0 -k {normal_version} -sp {normal_version} -aps rotation lanchesters groups -p 0 -t 5000 -f radius.json\n"
         )

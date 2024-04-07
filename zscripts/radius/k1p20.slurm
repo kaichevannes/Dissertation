@@ -8,4 +8,4 @@ cd /lyceum/kc2g21/Dissertation
 module load conda
 source activate myenv
 module load openmpi/4.1.1/gcc
-mpirun -np 10 python main.py visceks -oe 0 -of 0 -k 1.20 -sp 1.20 -aps rotation lanchesters numberofgroups -p 0 -t 5000 -f radius.json
+mpirun -np 10 python main.py visceks -oe 0 -of 0 -k 1.20 -sp 1.20 -aps rotation lanchesters groups -p 0 -t 5000 -f radius.json
