@@ -10,7 +10,7 @@
 #SBATCH --nodes=1     # Number of nodes requested
 #SBATCH --ntasks-per-node=40     # Tasks per node
 #SBATCH --cpus-per-task=1     # Threads per task
-#SBATCH --time=02:00:00   # walltime
+#SBATCH --time=03:00:00   # walltime
 
 cd /lyceum/kc2g21/Dissertation
 
