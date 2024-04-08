@@ -7,14 +7,13 @@ class Lanchesters(OrderParameter):
     """The Lanchesters index is a measure of how clustered a swarm is, this means
     how close to one another each swarm member is within a group."""
 
-    def calculate(self) -> float:
+    def calculate(self, entities) -> float:
         """Calculate the Lanchesters order parameter for the swarm at it's current state.
 
         Returns:
             float: how clustered the swarm is from 0 to 1
         """
         # From Zhang
-        entities = self.swarm.entities
         graph = nx.Graph()
         graph.add_nodes_from(entities)
 

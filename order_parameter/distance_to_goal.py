@@ -7,13 +7,12 @@ class DistanceToGoal(OrderParameter):
     the goal position of the swarm, a distance of 0 means all swarm members are
     exactly on the goal position."""
 
-    def calculate(self):
+    def calculate(self, entities):
         """Calculate the DistanceToGoal order parameter at this time step.
 
         Returns:
             float: the average distance to goal of the swarm at this time step
         """
-        entities = self.swarm.entities
         goal_position = self.swarm.goal_position
         total_distance = 0
         for entity in entities:

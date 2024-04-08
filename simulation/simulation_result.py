@@ -6,10 +6,13 @@ class SimulationResult:
     This is generic to allow for different handling of the results."""
 
     def __init__(
-        self, order_parameter_name: str, simulation_parameter_value=None
+        self,
+        order_parameter_name: str,
+        simulation_parameter_value=None,
     ) -> None:
         """Initialise results to be an empty dict."""
         self.results = {}
+        self.overriden = False
         self.order_parameter_name = order_parameter_name
         self.simulation_parameter_value = simulation_parameter_value
 

@@ -64,24 +64,39 @@ class BoidSimulationManager(SimulationManager):
 
     def save_to_file(self, filename):
         for order_parameter_i in range(len(self.simulation_results[0])):
-            simulation_dict = {}
-            for i in range(len(self.simulation_results)):
-                simulation_dict[i] = self.simulation_results[i][
-                    order_parameter_i
-                ].get_results()
+            for overriden_i in range(3):
+                simulation_dict = {}
+                for i in range(len(self.simulation_results)):
+                    simulation_dict[i] = self.simulation_results[i][order_parameter_i][
+                        overriden_i
+                    ].get_results()
 
-            simulation_parameter = self.simulation_options.simulation_parameter
+                simulation_parameter = self.simulation_options.simulation_parameter
 
-            simulation_saver = SimulationSaver(
-                filename.split(".")[0]
-                + "-"
-                + self.simulation_results[0][order_parameter_i].order_parameter_name
-                + "."
-                + filename.split(".")[1],
-                simulation_dict,
-                simulation_parameter,
-            )
-            simulation_saver.save()
+                match overriden_i:
+                    case 0:
+                        overriden_text = "normal"
+                    case 1:
+                        overriden_text = "override"
+                    case _:
+                        overriden_text = "combined"
+
+                simulation_saver = SimulationSaver(
+                    filename.split(".")[0] + "-"
+                    # SimulationResult
+                    # [visceks,lanchesters]
+                    # [[visceks-normal, visceks-override, visceks-combined], [lanchesters-normal, lanchesters-override, lanchesters-combined]]
+                    + self.simulation_results[0][order_parameter_i][
+                        0
+                    ].order_parameter_name
+                    + "-"
+                    + overriden_text
+                    + "."
+                    + filename.split(".")[1],
+                    simulation_dict,
+                    simulation_parameter,
+                )
+                simulation_saver.save()
 
         # using_simulation_parameters = simulation_parameter is not None
 

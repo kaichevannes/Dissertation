@@ -7,14 +7,13 @@ class NumberOfGroups(OrderParameter):
     """The number of groups order parameter simply tells us how many distinct clusters
     of boids there are at any given time."""
 
-    def calculate(self) -> float:
+    def calculate(self, entities) -> float:
         """Calculate the number of groups order parameter for the swarm at it's current state.
 
         Returns:
             float: how clustered the swarm is from 0 to 1
         """
         # Used by Harvey et al. in Application of chaos measures to a simplified boids flocking model
-        entities = self.swarm.entities
         graph = nx.Graph()
         graph.add_nodes_from(entities)
 

@@ -1,4 +1,5 @@
 from swarm.swarm import Swarm
+from entity.entity import Entity
 
 
 class OrderParameter:
@@ -24,7 +25,7 @@ class OrderParameter:
         """
         raise NotImplementedError
 
-    def calculate(self) -> float:
+    def calculate(self, entities: list[Entity]) -> float:
         """Calculate this order parameter on the current state of the swarm.
 
         Raises:
@@ -34,3 +35,35 @@ class OrderParameter:
             float: a value between 0 and 1 for this order parameter
         """
         raise NotImplementedError
+
+    def calculate_normal(self) -> float:
+        """Calculate this order parameter for the unoverriden swarm members only.
+
+        Returns:
+            float: a value between 0 and 1 for this order parameter
+        """
+        non_override_entities = []
+        for entity in self.swarm.entities:
+            if entity.override_fraction == 0:
+                non_override_entities.append(entity)
+        return self.calculate(non_override_entities)
+
+    def calculate_overriden(self) -> float:
+        """Calculate this order parameter for the overriden swarm members only.
+
+        Returns:
+            float: a value between 0 and 1 for this order parameter
+        """
+        overriden_entities = []
+        for entity in self.swarm.entities:
+            if entity.override_fraction > 0:
+                overriden_entities.append(entity)
+        return self.calculate(overriden_entities)
+
+    def calculate_combined(self) -> float:
+        """Calculate this order parameter for both overriden and normal swarm members.
+
+        Returns:
+            float: a value between 0 and 1 for this order parameter
+        """
+        return self.calculate(self.swarm.entities)

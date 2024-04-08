@@ -50,12 +50,29 @@ class BoidSimulation(Simulation):
         self.simulation_results = []
         if self.order_parameter_manager is not None:
             for order_parameter in self.order_parameter_manager.order_parameters:
-                self.simulation_results.append(
+                simulation_result_pair = []
+                # normal
+                simulation_result_pair.append(
                     SimulationResult(
                         order_parameter.get_name(),
                         boid_simulation_options.simulation_parameter,
                     )
                 )
+                # overriden
+                simulation_result_pair.append(
+                    SimulationResult(
+                        order_parameter.get_name(),
+                        boid_simulation_options.simulation_parameter,
+                    )
+                )
+                # combined
+                simulation_result_pair.append(
+                    SimulationResult(
+                        order_parameter.get_name(),
+                        boid_simulation_options.simulation_parameter,
+                    )
+                )
+                self.simulation_results.append(simulation_result_pair)
         self.swarm_adjuster = boid_simulation_options.swarm_adjuster
         self.pre_simulation_steps = boid_simulation_options.pre_simulation_steps
         self.max_time_step = boid_simulation_options.max_time_step
@@ -82,11 +99,26 @@ class BoidSimulation(Simulation):
                 for order_parameter_i in range(
                     len(self.order_parameter_manager.order_parameters)
                 ):
-                    current_result = self.order_parameter_manager.order_parameters[
-                        order_parameter_i
-                    ].calculate()
-                    self.simulation_results[order_parameter_i].add_result(
-                        t, current_result
+                    # current_result = self.order_parameter_manager.order_parameters[
+                    #     order_parameter_i
+                    # ].calculate()
+                    # self.simulation_results[order_parameter_i].add_result(
+                    #     t, current_result
+                    # )
+                    current_order_parameter = (
+                        self.order_parameter_manager.order_parameters[order_parameter_i]
+                    )
+                    normal_result = current_order_parameter.calculate_normal()
+                    overriden_result = current_order_parameter.calculate_overriden()
+                    combined_result = current_order_parameter.calculate_combined()
+                    self.simulation_results[order_parameter_i][0].add_result(
+                        t, normal_result
+                    )
+                    self.simulation_results[order_parameter_i][1].add_result(
+                        t, overriden_result
+                    )
+                    self.simulation_results[order_parameter_i][2].add_result(
+                        t, combined_result
                     )
                 if self.swarm_adjuster.continuous:
                     self.swarm_adjuster.adjust_swarm(self.swarm)

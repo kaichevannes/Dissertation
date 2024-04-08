@@ -7,14 +7,13 @@ class Visceks(OrderParameter):
     0 means no alignment (random directions and magnitudes), 1 means full alignment (all boids have the same direction and magnitude).
     """
 
-    def calculate(self):
+    def calculate(self, entities):
         """Calculate the Visceks order parameter at this time step.
 
         Returns:
             float: the Visceks order parameter at this time step
         """
         # from viscek, quoted from Harvey et al
-        entities = self.swarm.entities
         total_normalised_velocity = np.array([0, 0])
         for entity in entities:
             if np.linalg.norm(entity.velocity) == 0:
