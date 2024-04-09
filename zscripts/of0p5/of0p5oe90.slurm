@@ -8,4 +8,4 @@ cd /lyceum/kc2g21/Dissertation
 module load conda
 source activate myenv
 module load openmpi/4.1.1/gcc
-mpirun -np 10 python main.py distancetogoal -k 3.5 -of 0.5 -oe 90 -sp 90 -p 2000 -t 500 -f of0p5oe0to100.json
+mpirun -np 10 python main.py distancetogoal -aps visceks lanchesters rotation groups -k 3.5 -of 0.5 -oe 90 -sp 90 -p 2000 -t 500 -f of0p5oe0to100.json

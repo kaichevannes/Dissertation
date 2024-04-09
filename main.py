@@ -85,7 +85,6 @@ def main(args):
             all_order_parameters = [args.order_parameter]
         else:
             all_order_parameters = [args.order_parameter] + args.additionalparameters
-        print(all_order_parameters)
         for order_parameter in all_order_parameters:
             match order_parameter:
                 case "visceks":
