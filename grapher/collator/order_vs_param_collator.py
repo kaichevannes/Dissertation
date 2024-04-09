@@ -2,6 +2,7 @@ from grapher.collator.data_collator import DataCollator
 from grapher.data_point.contour_point import ContourPoint
 from grapher.data_point.multi_line_point import MultiLinePoint
 from grapher.data_point.data_point import DataPoint
+from grapher.data_point.error_bar_point import ErrorBarPoint
 import numpy as np
 
 
@@ -11,7 +12,35 @@ class OrderVsParamCollator(DataCollator):
         # Data needs to be all of the data put together in one file.
         super().__init__(data)
 
-    def get_2d_data_points(self, simulation_parameters) -> list[DataPoint]:
+    def get_2d_data_points(self) -> list[DataPoint]:
+        self.data.pop("simulation_parameter")
+
+        ys = [float(y) for y in self.data.keys()]
+        ys.sort()
+        for y in ys:
+            # y is the oe values
+            parameter_data = self.data[str(y)]
+            total_average = []
+            # will have n number of parameter_data runs
+            for run in parameter_data.values():
+                # We want to get the average of the last 300 time steps of each of the runs
+                values = list(run.values())
+                last_300_runs = np.array(values[-300:])
+                total_average.append(np.mean(last_300_runs))
+
+            # print(f"total average for y = {y}: {total_average}")
+
+            self.data_points.append(
+                ErrorBarPoint(
+                    y,
+                    np.mean(total_average),
+                    np.std(total_average) / np.sqrt(len(total_average)),
+                )
+            )
+
+        return self.data_points
+
+    def get_multi_data_points(self, simulation_parameters) -> list[DataPoint]:
         for x in simulation_parameters:
             # x is the of
             print(f"Getting values for the simulation parameter: {x}")
