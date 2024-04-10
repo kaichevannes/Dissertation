@@ -46,7 +46,10 @@ class OrderParameter:
         for entity in self.swarm.entities:
             if entity.override_fraction == 0:
                 non_override_entities.append(entity)
-        return self.calculate(non_override_entities)
+        if len(non_override_entities) > 0:
+            return self.calculate(non_override_entities)
+        else:
+            return None
 
     def calculate_overriden(self) -> float:
         """Calculate this order parameter for the overriden swarm members only.
@@ -58,7 +61,10 @@ class OrderParameter:
         for entity in self.swarm.entities:
             if entity.override_fraction > 0:
                 overriden_entities.append(entity)
-        return self.calculate(overriden_entities)
+        if len(overriden_entities) > 0:
+            return self.calculate(overriden_entities)
+        else:
+            return None
 
     def calculate_combined(self) -> float:
         """Calculate this order parameter for both overriden and normal swarm members.
