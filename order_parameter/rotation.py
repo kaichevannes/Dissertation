@@ -23,6 +23,9 @@ class Rotation(OrderParameter):
             float: the amount of rotation of the swarm from 0 being no rotation to 1 being circular rotation
         """
         t = self.swarm.entities[0].time_step
+        entities = (
+            self.swarm.entities
+        )  # for rotation, we can't calculate this separately when the entities list changes
 
         if t == 0:
             self.velocities = []
