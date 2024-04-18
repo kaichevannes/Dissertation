@@ -89,12 +89,59 @@ class OrderVsParamCollator(DataCollator):
                 total_average = 0
                 # will have n number of parameter_data runs
                 for run in parameter_data.values():
-                    # We want to get the average of the last 500 runs of each of the runs
+                    # We want to get the average of the last 300 runs of each of the runs
                     values = list(run.values())
-                    last_500_runs = np.array(values[-500:])
+                    last_500_runs = np.array(values[-300:])
                     total_average += np.mean(last_500_runs)
 
                 # print(f"total average for y = {y}: {total_average}")
+
+                self.data_points.append(
+                    ContourPoint(
+                        float(x),
+                        y,
+                        total_average / len(parameter_data),
+                    )
+                )
+
+        return self.data_points
+
+    def get_3d_time_to_data_points(self, simulation_parameters) -> list[DataPoint]:
+        # x - of, y - oe, z - dtg
+        for x in simulation_parameters:
+            # x is the of
+            print(f"Getting time to values for the simulation parameter: {x}")
+            one_file_data = self.data[x]
+            one_file_data.pop("simulation_parameter")
+
+            ys = [float(y) for y in one_file_data.keys()]
+            # ys.sort()
+            for y in ys:
+                # y is the oe values
+                parameter_data = one_file_data[str(y)]
+                total_average = 0
+                # will have n number of parameter_data runs
+                for run in parameter_data.values():
+                    # We want to find where the average of the last 300 runs first occurs within 5%
+                    values = list(run.values())
+                    last_300_runs = np.array(values[-300:])
+                    final_average = np.mean(last_300_runs)
+
+                    starting_t = 0
+                    current_average_runs = np.array(values[300:])
+                    while (
+                        abs(np.mean(current_average_runs) - final_average)
+                        / final_average
+                        > 0.05
+                    ):
+                        starting_t += 1
+                        if starting_t >= len(values) - 300:
+                            break
+                        np.delete(current_average_runs, 1, 0)
+                        np.append(current_average_runs, values[300 + starting_t])
+
+                    # print(f"run {run} reached average in {starting_t} time steps.")
+                    total_average += starting_t
 
                 self.data_points.append(
                     ContourPoint(

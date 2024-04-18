@@ -96,68 +96,33 @@ class Grapher:
             cbar_kws={"label": self.zlabel},
         )
 
-        # sns.kdeplot(x=data[self.ylabel], y=data[self.zlabel])
-
-        # self.ax.tricontour(
-        #     ys,
-        #     (xs * 10) + 0.5,
-        #     zs,
-        #     colors="black",
-        #     levels=2,
-        # )
-        # self.ax.tricontour(ys, xs, zs)
-
-        # X, Y = np.meshgrid(xs, ys)
-        # Z = griddata((xs, ys), zs, (X, Y), method="nearest")
-        # self.ax.contour(
-        #     X,
-        #     Y,
-        #     Z,
-        # )
-        # df["Z_value"] = pd.to_numeric(df["Z_value"])
-        # pivotted = df.pivot("Y_value", "X_value", "Z_value")
-        # sns.heatmap(pivotted, ax=self.ax)
-        # surf = self.ax.plot_trisurf(
-        #     xs, ys, zs, cmap=cm.coolwarm, linewidth=0.2, antialiased=True
-        # )
-        # surf = self.ax.scatter(xs, ys, zs)
-
-        # Customize the z axis.
-        # self.ax.zaxis.set_major_locator(LinearLocator(10))
-        # A StrMethodFormatter is used automatically
-        # self.ax.zaxis.set_major_formatter("{x:.02f}")
-
-        # Add a color bar which maps values to colors.
-        # self.fig.colorbar(surf, shrink=0.5, aspect=5)
-        # self.ax.set_xlabel(self.xlabel)
-        # self.ax.set_ylabel(self.ylabel)
-        # self.ax.set_zlabel(self.zlabel)
-
-    def generate_multiline_plot(self, simulation_parameters) -> None:
+    def generate_time_to_goal_heatmap(self, simulation_parameters) -> None:
         collator = OrderVsParamCollator(self.data)
 
-        plot_data = collator.get_2d_data_points(simulation_parameters)
-        # xs = [data_point.x for data_point in plot_data]
-        # ys = [data_point.y for data_point in plot_data]
-        # zs = [data_point.z for data_point in plot_data]
-
+        plot_data = collator.get_3d_time_to_data_points(simulation_parameters)
+        # self.fig, self.ax = plt.subplots(subplot_kw={"projection": "3d"})
         self.fig, self.ax = plt.subplots()
 
-        for s in simulation_parameters:
-            xs = []
-            ys = []
-            yerrs = []
-            for data_point in plot_data:
-                if data_point.simulation_parameter == s:
-                    xs.append(data_point.x)
-                    ys.append(data_point.y)
-                    yerrs.append(data_point.yerr)
-            self.ax.scatter(xs, ys, label=s, s=4)
-            self.ax.errorbar(xs, ys, yerrs, fmt="none")
+        xs = np.array([data_point.x for data_point in plot_data])
+        ys = np.array([int(data_point.y) for data_point in plot_data])
+        zs = np.array([data_point.z for data_point in plot_data])
+        # zs = gaussian_filter1d(zs, sigma=1)
+        # zs = median_filter(zs)
+        # zs = gaussian_filter(zs, sigma=2)
 
-        self.ax.set_xlabel(self.xlabel)
-        self.ax.set_ylabel(self.ylabel)
-        self.ax.legend(title=self.zlabel)
+        data = pd.DataFrame({self.xlabel: xs, self.ylabel: ys, self.zlabel: zs})
+
+        data_pivoted = data.pivot(
+            index=self.xlabel, columns=self.ylabel, values=self.zlabel
+        )
+        sns.heatmap(
+            data_pivoted,
+            vmin=np.min(zs),
+            vmax=np.max(zs),
+            ax=self.ax,
+            cmap="binary",
+            cbar_kws={"label": self.zlabel},
+        )
 
     def save(self):
         self.fig.savefig(f"./zfigures/{self.savefile}", bbox_inches="tight")

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+####################################
+#  Iridis 5 slurm script template
+#
+#  Submit script: sbatch filename
+#
+####################################
+#SBATCH --ntasks=40     # Number of processor cores (i.e. tasks)
+#SBATCH --nodes=1     # Number of nodes requested
+#SBATCH --ntasks-per-node=40     # Tasks per node
+#SBATCH --cpus-per-task=1     # Threads per task
+#SBATCH --time=00:60:00   # walltime
+
+cd /lyceum/kc2g21/Dissertation
+
+module load conda
+source activate myenv
+
+module load openmpi/4.1.1/gcc
+
+mpirun -np 40 python main.py visceks -aps lanchesters -of 0 -oe 0 -k 3.5 -t 2500 -f alignedvisceks.json

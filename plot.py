@@ -17,7 +17,10 @@ def plot(args):
         if args.multiline:
             grapher.generate_multiline_plot(args.simulationparameters)
         else:
-            grapher.generate_3d_contour(args.simulationparameters)
+            if args.timetogoal:
+                grapher.generate_time_to_goal_heatmap(args.simulationparameters)
+            else:
+                grapher.generate_3d_contour(args.simulationparameters)
     else:
         with open(f"./data/{args.filename}", "r") as f:
             data = json.load(f)
@@ -48,6 +51,7 @@ if __name__ == "__main__":
     parser.add_argument("-sf", "--savefile")
     parser.add_argument("-ml", "--multiline", action="store_true")
     parser.add_argument("-r", "--range", type=int)
+    parser.add_argument("-ttg", "--timetogoal", action="store_true")
     plot(parser.parse_args())
 
     # Example: python plot.py -f of0p0oe0to100.json -d -3d -af of0p1oe0to100.json of0p2oe0to100.json of0p3oe0to100.json of0p4oe0to100.json of0p5oe0to100.json of0p6oe0to100.json of0p7oe0to100.json of0p8oe0to100.json of0p9oe0to100.json of1p0oe0to100.json -sps 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 -y "number of entities overriden" -z "distance to goal" -x lambda -sf heatmap-magma-contour.png -s

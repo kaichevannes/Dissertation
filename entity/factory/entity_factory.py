@@ -32,8 +32,10 @@ class EntityFactory:
         if self.grid_size < 1:
             raise ValueError("Grid size must be at least 1.")
         int_grid_size = math.ceil(self.grid_size)
-        x_velocity = random.randint(-int_grid_size, int_grid_size)
-        y_velocity = random.randint(-int_grid_size, int_grid_size)
+        # x_velocity = random.randint(-int_grid_size, int_grid_size)
+        # y_velocity = random.randint(-int_grid_size, int_grid_size)
+        x_velocity = random.randint(0, int_grid_size)
+        y_velocity = random.randint(0, int_grid_size)
         return np.array([x_velocity, y_velocity]) / int_grid_size
 
     def create_entity(self) -> Entity:

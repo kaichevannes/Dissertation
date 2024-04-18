@@ -30,12 +30,12 @@ def main(args):
     # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
 
     # Experiment 2:
-    boid_swarm_adjuster.continuous = True
-    boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_from_edge)
+    # boid_swarm_adjuster.continuous = True
+    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_from_edge)
 
     # Experiment 3:
-    # boid_swarm_adjuster.set_k(5.5)
-    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_radius)
+    boid_swarm_adjuster.set_k(5.5)
+    boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_radius)
 
     # Experiment 4:
     # boid_swarm_adjuster.continuous = True
