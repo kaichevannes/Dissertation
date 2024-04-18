@@ -65,7 +65,7 @@ for i in range(10):
             outfile.write("source activate myenv\n")
             outfile.write("module load openmpi/4.1.1/gcc\n")
             outfile.write(
-                f"mpirun -np 10 python main.py distancetogoal -aps visceks lanchesters rotation groups -k 3.5 -of 0.{i} -oe {j} -sp {j} -p 2000 -t {ofs[2*i][j]} -f of0p{i}oe0to100.json\n"
+                f"mpirun -np 10 python main.py distancetogoal -aps visceks lanchesters rotation groups -k 3.5 -of 0.{i} -oe {j} -sp {j} -p 700 -t {ofs[2*i][j]} -f of0p{i}oe0to100.json\n"
             )
 
 for i in range(10):
