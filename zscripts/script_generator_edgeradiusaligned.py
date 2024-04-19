@@ -5,34 +5,38 @@ import numpy as np
 # This is top to bottom, how many runs on that column?
 of_initial_values = (
     [500]
-    + list(np.linspace(2000, 1000, 5, dtype=int))
-    + list(np.linspace(1000, 500, 5, dtype=int))
-    + list(np.linspace(500, 1000, 10, dtype=int))
+    + list(np.linspace(750, 750, 5, dtype=int))
+    + list(np.linspace(750, 500, 5, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
 )
 of_quarter_values = (
     [500]
-    + list(np.linspace(1000, 1000, 5, dtype=int))
-    + list(np.linspace(1000, 500, 10, dtype=int))
-    + list(np.linspace(500, 2000, 5, dtype=int))
+    + list(np.linspace(750, 1500, 5, dtype=int))
+    + list(np.linspace(1500, 5000, 5, dtype=int))
+    + list(np.linspace(5000, 500, 5, dtype=int))
+    + list(np.linspace(500, 2100, 5, dtype=int))
 )
 of_middle_values = (
     [500]
-    + list(np.linspace(1500, 6000, 5, dtype=int))
-    + list(np.linspace(6000, 600, 5, dtype=int))
-    + list(np.linspace(600, 500, 5, dtype=int))
-    + list(np.linspace(500, 5000, 5, dtype=int))
+    + list(np.linspace(1500, 1500, 5, dtype=int))
+    + list(np.linspace(1500, 1200, 5, dtype=int))
+    + list(np.linspace(1200, 800, 5, dtype=int))
+    + list(np.linspace(800, 5300, 5, dtype=int))
 )
 of_three_quarter_values = (
     [500]
-    + list(np.linspace(1500, 2500, 5, dtype=int))
-    + list(np.linspace(2500, 500, 5, dtype=int))
-    + list(np.linspace(500, 500, 5, dtype=int))
-    + list(np.linspace(500, 6000, 5, dtype=int))
+    + list(np.linspace(1000, 5000, 5, dtype=int))
+    + list(np.linspace(5000, 500, 5, dtype=int))
+    + list(np.linspace(500, 2300, 5, dtype=int))
+    + list(np.linspace(2300, 5300, 5, dtype=int))
 )
 of_end_values = (
     [500]
-    + list(np.linspace(7000, 500, 5, dtype=int))
-    + list(np.linspace(500, 500, 15, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
+    + list(np.linspace(500, 1000, 5, dtype=int))
+    + list(np.linspace(1000, 500, 5, dtype=int))
 )
 ofs = []
 
@@ -70,7 +74,7 @@ for i in range(10):
             outfile.write("source activate myenv\n")
             outfile.write("module load openmpi/4.1.1/gcc\n")
             outfile.write(
-                f"mpirun -np 10 python main.py distancetogoal -aps visceks lanchesters rotation groups -k 3.5 -of 0.{i} -oe {j} -sp {j} -p 500 -t {ofs[2*i][j]} -f of0p{i}oe0to100.json\n"
+                f"mpirun -np 10 python main.py distancetogoal -aps visceks lanchesters rotation groups -k 3.5 -of 0.{i} -oe {j} -sp {j} -p 700 -t {ofs[2*i][j]} -f of0p{i}oe0to100.json\n"
             )
 
 for i in range(10):
@@ -96,7 +100,7 @@ for i in range(10):
             outfile.write("source activate myenv\n")
             outfile.write("module load openmpi/4.1.1/gcc\n")
             outfile.write(
-                f"mpirun -np 10 python main.py distancetogoal -aps visceks lanchesters rotation groups -k 3.5 -of 0.{formatted_new_i} -oe {j} -sp {j} -p 500 -t {ofs[(2 * i) + 1][j]} -f of0p{formatted_new_i}oe0to100.json\n"
+                f"mpirun -np 10 python main.py distancetogoal -aps visceks lanchesters rotation groups -k 3.5 -of 0.{formatted_new_i} -oe {j} -sp {j} -p 700 -t {ofs[(2 * i) + 1][j]} -f of0p{formatted_new_i}oe0to100.json\n"
             )
 
 for j in range(101):
@@ -116,5 +120,5 @@ for j in range(101):
         outfile.write("source activate myenv\n")
         outfile.write("module load openmpi/4.1.1/gcc\n")
         outfile.write(
-            f"mpirun -np 10 python main.py distancetogoal -aps visceks lanchesters rotation groups -k 3.5 -of 1.0 -oe {j} -sp {j} -p 500 -t {ofs[20][j]} -f of1p0oe0to100.json\n"
+            f"mpirun -np 10 python main.py distancetogoal -aps visceks lanchesters rotation groups -k 3.5 -of 1.0 -oe {j} -sp {j} -p 700 -t {ofs[20][j]} -f of1p0oe0to100.json\n"
         )
