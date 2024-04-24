@@ -19,4 +19,4 @@ source activate myenv
 
 module load openmpi/4.1.1/gcc
 
-mpirun -np 40 python main.py distancetogoal -of 1 -oe 25 -k 3.5 -p 700 -t 20000 -f of1p0oe25.json
+mpirun -np 40 python main.py distancetogoal -st 3 -of 1 -oe 25 -k 3.5 -p 700 -t 20000 -f of1p0oe25.json
