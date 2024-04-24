@@ -27,21 +27,28 @@ def main(args):
         boid_swarm_adjuster.set_num_entities(50)
 
     # Experiment 1:
-    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
+    if args.strategy == 1:
+        boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
 
     # Experiment 2:
-    # boid_swarm_adjuster.continuous = True
-    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_from_edge)
+    if args.strategy == 2:
+        boid_swarm_adjuster.continuous = True
+        boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_from_edge)
 
     # Experiment 3:
-    # boid_swarm_adjuster.set_k(5.5)
-    # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_radius)
+    if args.strategy == 3:
+        boid_swarm_adjuster.set_k(5.5)
+        boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_radius)
 
     # Experiment 4:
-    boid_swarm_adjuster.continuous = True
-    boid_swarm_adjuster.set_k(5.5)
-    boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_from_edge_plus_radius)
+    if args.strategy == 4:
+        boid_swarm_adjuster.continuous = True
+        boid_swarm_adjuster.set_k(5.5)
+        boid_swarm_adjuster.set_strategy(
+            boid_swarm_adjuster.modify_n_from_edge_plus_radius
+        )
 
+    # Experiment 5: (Realistically not going to reach this...)
     # boid_swarm_adjuster.set_velocity_multiplier(1.1)
     # boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_velocity)
 
@@ -162,4 +169,5 @@ if __name__ == "__main__":
     parser.add_argument("-sf", "--savefolder")
     parser.add_argument("-nf", "--noisefraction", type=float)
     parser.add_argument("-aps", "--additionalparameters", nargs="*")
+    parser.add_argument("-st", "--strategy", type=int)
     main(parser.parse_args())

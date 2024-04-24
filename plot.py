@@ -8,9 +8,14 @@ def plot(args):
         data = {}
         filenames = [args.filename] + args.additionalfiles
         for i in range(len(filenames)):
-            with open(f"./data/{filenames[i]}", "r") as f:
-                print(f"opening ./data/{filenames[i]}")
-                data[args.simulationparameters[i]] = json.load(f)
+            if args.folder is None:
+                with open(f"./data/{filenames[i]}", "r") as f:
+                    print(f"opening ./data/{filenames[i]}")
+                    data[args.simulationparameters[i]] = json.load(f)
+            else:
+                with open(f"./data/{args.folder}/{filenames[i]}", "r") as f:
+                    print(f"opening ./data/{args.folder}/{filenames[i]}")
+                    data[args.simulationparameters[i]] = json.load(f)
         grapher = Grapher(
             data, args.xlabel, args.ylabel, args.zlabel, args.savefile, args.range
         )
@@ -22,8 +27,12 @@ def plot(args):
             else:
                 grapher.generate_3d_contour(args.simulationparameters)
     else:
-        with open(f"./data/{args.filename}", "r") as f:
-            data = json.load(f)
+        if args.folder is None:
+            with open(f"./data/{args.filename}", "r") as f:
+                data = json.load(f)
+        else:
+            with open(f"./data/{args.folder}/{args.filename}", "r") as f:
+                data = json.load(f)
         grapher = Grapher(
             data, args.xlabel, args.ylabel, args.zlabel, args.savefile, args.range
         )
@@ -52,6 +61,7 @@ if __name__ == "__main__":
     parser.add_argument("-ml", "--multiline", action="store_true")
     parser.add_argument("-r", "--range", type=int)
     parser.add_argument("-ttg", "--timetogoal", action="store_true")
+    parser.add_argument("-fo", "--folder")
     plot(parser.parse_args())
 
     # Example: python plot.py -f of0p0oe0to100.json -d -3d -af of0p1oe0to100.json of0p2oe0to100.json of0p3oe0to100.json of0p4oe0to100.json of0p5oe0to100.json of0p6oe0to100.json of0p7oe0to100.json of0p8oe0to100.json of0p9oe0to100.json of1p0oe0to100.json -sps 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 -y "number of entities overriden" -z "distance to goal" -x lambda -sf heatmap-magma-contour.png -s

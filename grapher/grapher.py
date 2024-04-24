@@ -57,6 +57,8 @@ class Grapher:
             ys = ys[: self.range]
             yerrs = yerrs[: self.range]
 
+        # self.ax.set_xscale("log")
+        # self.ax.set_xlim(0, 1000000)
         self.ax.errorbar(
             xs,
             ys,

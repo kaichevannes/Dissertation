@@ -142,7 +142,7 @@ class BoidSimulation(Simulation):
             if self.swarm_adjuster.continuous:
                 self.visualiser.set_continuous_adjuster(self.swarm_adjuster)
 
-            self.visualiser.set_steps(self.max_time_step - self.pre_simulation_steps)
+            self.visualiser.set_steps(self.max_time_step)
             # Adjust swarm here
             self.visualiser.initialise_visualisation()
             self.visualiser.set_end_frame(self.visualiser.steps)
