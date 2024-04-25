@@ -11,6 +11,7 @@
 #SBATCH --ntasks-per-node=40     # Tasks per node
 #SBATCH --cpus-per-task=1     # Threads per task
 #SBATCH --time=03:30:00   # walltime
+#SBATCH --partition=serial
 
 cd /lyceum/kc2g21/Dissertation
 
