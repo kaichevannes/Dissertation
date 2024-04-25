@@ -11,7 +11,6 @@
 #SBATCH --ntasks-per-node=40     # Tasks per node
 #SBATCH --cpus-per-task=1     # Threads per task
 #SBATCH --time=03:30:00   # walltime
-#SBATCH --partition=serial
 
 cd /lyceum/kc2g21/Dissertation
 
@@ -20,4 +19,4 @@ source activate myenv
 
 module load openmpi/4.1.1/gcc
 
-mpirun -np 20 python main.py visceks -aps lanchesters rotation -st 1 -of 0.2 -oe 75 -p 500 -t 20000 -f rotational-of0p2oe75.json
+mpirun -np 10 python main.py visceks -aps lanchesters rotation -st 1 -of 0.2 -oe 75 -p 500 -t 20000 -f rotational-of0p2oe75.json
