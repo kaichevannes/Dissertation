@@ -57,8 +57,8 @@ class Grapher:
             ys = ys[: self.range]
             yerrs = yerrs[: self.range]
 
-        # self.ax.set_xscale("log")
-        # self.ax.set_xlim(0, 1000000)
+        self.ax.set_xscale("log")
+        self.ax.set_xlim(1, 1000000)
         self.ax.errorbar(
             xs,
             ys,
@@ -67,8 +67,8 @@ class Grapher:
             capsize=2,
             elinewidth=1,
         )
-        self.ax.set_xlabel(self.xlabel)
-        self.ax.set_ylabel(self.ylabel)
+        self.ax.set_xlabel(self.xlabel, rotation=0)
+        self.ax.set_ylabel(self.ylabel, rotation=0)
 
     def generate_3d_contour(self, simulation_parameters) -> None:
         collator = OrderVsParamCollator(self.data)

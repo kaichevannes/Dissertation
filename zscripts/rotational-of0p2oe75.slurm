@@ -19,4 +19,4 @@ source activate myenv
 
 module load openmpi/4.1.1/gcc
 
-mpirun -np 40 python main.py lanchesters -st 1 -of 0.2 -oe 75 -p 500 -t 20000 -f of0p2oe75.json
+mpirun -np 20 python main.py visceks -aps lanchesters rotation -st 1 -of 0.2 -oe 75 -p 500 -t 20000 -f rotational-of0p2oe75.json
