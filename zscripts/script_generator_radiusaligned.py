@@ -5,38 +5,38 @@ import numpy as np
 # This is top to bottom, how many runs on that column?
 of_initial_values = (
     [500]
-    + list(np.linspace(750, 750, 5, dtype=int))
-    + list(np.linspace(750, 500, 5, dtype=int))
-    + list(np.linspace(500, 500, 5, dtype=int))
-    + list(np.linspace(500, 500, 5, dtype=int))
+    + list(np.linspace(500, 2000, 5, dtype=int))
+    + list(np.linspace(2000, 1500, 5, dtype=int))
+    + list(np.linspace(1500, 2000, 5, dtype=int))
+    + list(np.linspace(2000, 500, 5, dtype=int))
 )
 of_quarter_values = (
     [500]
-    + list(np.linspace(750, 1500, 5, dtype=int))
-    + list(np.linspace(1500, 5000, 5, dtype=int))
-    + list(np.linspace(5000, 500, 5, dtype=int))
-    + list(np.linspace(500, 2100, 5, dtype=int))
+    + list(np.linspace(500, 1000, 5, dtype=int))
+    + list(np.linspace(1000, 500, 5, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
 )
 of_middle_values = (
     [500]
-    + list(np.linspace(1500, 1500, 5, dtype=int))
-    + list(np.linspace(1500, 1200, 5, dtype=int))
-    + list(np.linspace(1200, 800, 5, dtype=int))
-    + list(np.linspace(800, 5300, 5, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
+    + list(np.linspace(500, 500, 5, dtype=int))
 )
 of_three_quarter_values = (
     [500]
-    + list(np.linspace(1000, 5000, 5, dtype=int))
-    + list(np.linspace(5000, 500, 5, dtype=int))
-    + list(np.linspace(500, 2300, 5, dtype=int))
-    + list(np.linspace(2300, 5300, 5, dtype=int))
+    + list(np.linspace(500, 2500, 5, dtype=int))
+    + list(np.linspace(2500, 2000, 5, dtype=int))
+    + list(np.linspace(2000, 1500, 5, dtype=int))
+    + list(np.linspace(1500, 1500, 5, dtype=int))
 )
 of_end_values = (
     [500]
     + list(np.linspace(500, 500, 5, dtype=int))
     + list(np.linspace(500, 500, 5, dtype=int))
-    + list(np.linspace(500, 1000, 5, dtype=int))
-    + list(np.linspace(1000, 500, 5, dtype=int))
+    + list(np.linspace(500, 1500, 5, dtype=int))
+    + list(np.linspace(1500, 500, 5, dtype=int))
 )
 ofs = []
 
@@ -58,7 +58,7 @@ for i in range(len(of_initial_values)):
 for i in range(10):
     # 0.1, 0.2, etc
     for j in range(101):
-        if j == 0 or j == 1 or j == 99 or j % 2 == 0:
+        if not (j == 0 or j == 1 or j == 99 or j % 2 == 0):
             continue
         if not os.path.isdir(f"of0p{i}"):
             os.mkdir(f"of0p{i}")
@@ -82,7 +82,7 @@ for i in range(10):
     new_i = i + 0.5
     formatted_new_i = f"{int(new_i * 10):02}"
     for j in range(101):
-        if j == 0 or j == 1 or j == 99 or j % 2 == 0:
+        if not (j == 0 or j == 1 or j == 99 or j % 2 == 0):
             continue
         if not os.path.isdir(f"of0p{formatted_new_i}"):
             os.mkdir(f"of0p{formatted_new_i}")
@@ -104,7 +104,7 @@ for i in range(10):
             )
 
 for j in range(101):
-    if j == 0 or j == 1 or j == 99 or j % 2 == 0:
+    if not (j == 0 or j == 1 or j == 99 or j % 2 == 0):
         continue
     if not os.path.isdir("of1p0"):
         os.mkdir("of1p0")

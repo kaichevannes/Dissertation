@@ -12,7 +12,14 @@ from scipy.interpolate import griddata
 import seaborn as sns
 import pandas as pd
 
+# Normal
 plt.rcParams.update({"font.size": 16})
+
+# Heatmap quad
+# plt.rcParams.update({"font.size": 22})
+
+# Distance to goal subplot
+# plt.rcParams.update({"font.size": 28})
 SIZE = 20
 
 
@@ -57,8 +64,9 @@ class Grapher:
             ys = ys[: self.range]
             yerrs = yerrs[: self.range]
 
-        self.ax.set_xscale("log")
-        self.ax.set_xlim(1, 1000000)
+        # self.ax.set_xscale("log")
+        # self.ax.set_xlim(1, 100000)
+        # self.ax.set_ylim(0, 10)
         self.ax.errorbar(
             xs,
             ys,
@@ -94,7 +102,11 @@ class Grapher:
             vmin=np.min(zs),
             vmax=np.max(zs),
             ax=self.ax,
-            cmap="binary",
+            # cmap="binary",
+            cmap="pink_r",
+            # cmap="Oranges_r",
+            # cmap="Purples",
+            # cmap="Greens",
             cbar_kws={"label": self.zlabel},
         )
 
@@ -123,6 +135,7 @@ class Grapher:
             vmax=np.max(zs),
             ax=self.ax,
             cmap="binary",
+            # cmap="Purples",
             cbar_kws={"label": self.zlabel},
         )
 

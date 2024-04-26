@@ -83,26 +83,34 @@ class OrderVsParamCollator(DataCollator):
 
             ys = [float(y) for y in one_file_data.keys()]
             # ys.sort()
+
             for y in ys:
-                # y is the oe values
-                parameter_data = one_file_data[str(y)]
-                total_average = 0
-                # will have n number of parameter_data runs
-                for run in parameter_data.values():
-                    # We want to get the average of the last 300 runs of each of the runs
-                    values = list(run.values())
-                    last_500_runs = np.array(values[-300:])
-                    total_average += np.mean(last_500_runs)
+                try:
+                    # y is the oe values
+                    parameter_data = one_file_data[str(y)]
+                    total_average = 0
+                    # will have n number of parameter_data runs
+                    for run in parameter_data.values():
+                        # We want to get the average of the last 300 runs of each of the runs
+                        values = list(run.values())
+                        if len(values) < 300:
+                            continue
+                        last_300_runs = np.array(values[-300:])
+                        total_average += np.mean(last_300_runs)
 
-                # print(f"total average for y = {y}: {total_average}")
+                    # print(f"total average for y = {y}: {total_average}")
 
-                self.data_points.append(
-                    ContourPoint(
-                        float(x),
-                        y,
-                        total_average / len(parameter_data),
+                    self.data_points.append(
+                        ContourPoint(
+                            float(x),
+                            y,
+                            total_average / len(parameter_data),
+                        )
                     )
-                )
+                except:
+                    print(f"y = {y}")
+                    print(f"last_300_runs = {last_300_runs}")
+                    print(f"run = {run}")
 
         return self.data_points
 
