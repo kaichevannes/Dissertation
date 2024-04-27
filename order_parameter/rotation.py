@@ -30,7 +30,7 @@ class Rotation(OrderParameter):
             return self._calculate_overriden(entities)
         else:
             return self._calculate_normal(entities)
-        
+
     def _calculate_combined(self, entities) -> float:
         t = self.swarm.entities[0].time_step
         # entities = (
@@ -48,7 +48,7 @@ class Rotation(OrderParameter):
 
         if t < self.z:
             return None
-        
+
         total_global_velocity_difference = 0
         for entity_index in range(len(entities)):
             total_velocity_difference = 0
@@ -84,14 +84,16 @@ class Rotation(OrderParameter):
 
         if t < self.z:
             return None
-        
+
         total_global_velocity_difference = 0
         for entity_index in range(len(entities)):
             total_velocity_difference = 0
 
             for velocity_index in range(self.z - 2):
                 velocity_k = self.velocities_normal[velocity_index][entity_index]
-                velocity_k_plus_1 = self.velocities_normal[velocity_index + 1][entity_index]
+                velocity_k_plus_1 = self.velocities_normal[velocity_index + 1][
+                    entity_index
+                ]
                 total_velocity_difference += (
                     np.cross(velocity_k, velocity_k_plus_1)
                     - np.cross(velocity_k_plus_1, velocity_k)
@@ -102,7 +104,7 @@ class Rotation(OrderParameter):
 
         self.velocities_normal = self.velocities_normal[1:]
         return total_global_velocity_difference / len(entities)
-    
+
     def _calculate_overriden(self, entities) -> float:
         t = self.swarm.entities[0].time_step
         # entities = (
@@ -120,14 +122,16 @@ class Rotation(OrderParameter):
 
         if t < self.z:
             return None
-        
+
         total_global_velocity_difference = 0
         for entity_index in range(len(entities)):
             total_velocity_difference = 0
 
             for velocity_index in range(self.z - 2):
                 velocity_k = self.velocities_overriden[velocity_index][entity_index]
-                velocity_k_plus_1 = self.velocities_overriden[velocity_index + 1][entity_index]
+                velocity_k_plus_1 = self.velocities_overriden[velocity_index + 1][
+                    entity_index
+                ]
                 total_velocity_difference += (
                     np.cross(velocity_k, velocity_k_plus_1)
                     - np.cross(velocity_k_plus_1, velocity_k)
@@ -138,8 +142,6 @@ class Rotation(OrderParameter):
 
         self.velocities_overriden = self.velocities_overriden[1:]
         return total_global_velocity_difference / len(entities)
-
-
 
     def get_name(self) -> str:
         return "rotation"

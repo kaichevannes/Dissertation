@@ -19,34 +19,37 @@ def main(args):
     if args.overridefraction is not None:
         boid_swarm_adjuster.set_override_fraction(args.overridefraction)
     else:
-        boid_swarm_adjuster.set_override_fraction(0.3)
+        boid_swarm_adjuster.set_override_fraction(0)
 
     if args.overrideentities is not None:
         boid_swarm_adjuster.set_num_entities(args.overrideentities)
     else:
-        boid_swarm_adjuster.set_num_entities(50)
+        boid_swarm_adjuster.set_num_entities(0)
 
     # Experiment 1:
     if args.strategy == 1:
         boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n)
 
     # Experiment 2:
-    if args.strategy == 2:
+    elif args.strategy == 2:
         boid_swarm_adjuster.continuous = True
         boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_from_edge)
 
     # Experiment 3:
-    if args.strategy == 3:
+    elif args.strategy == 3:
         boid_swarm_adjuster.set_k(5.5)
         boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_n_plus_radius)
 
     # Experiment 4:
-    if args.strategy == 4:
+    elif args.strategy == 4:
         boid_swarm_adjuster.continuous = True
         boid_swarm_adjuster.set_k(5.5)
         boid_swarm_adjuster.set_strategy(
             boid_swarm_adjuster.modify_n_from_edge_plus_radius
         )
+
+    else:
+        boid_swarm_adjuster.set_strategy(boid_swarm_adjuster.modify_first)
 
     # Experiment 5: (Realistically not going to reach this...)
     # boid_swarm_adjuster.set_velocity_multiplier(1.1)
