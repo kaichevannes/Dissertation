@@ -206,6 +206,13 @@ class Boid(Entity):
             Swarm(None, None, flock_centering_neighbours)
         )
 
+        # (
+        #     velocity_matching_acceleration,
+        #     velocity_matching_neighbours,
+        # ) = self._velocity_matching_acceleration(
+        #     Swarm(None, None, flock_centering_neighbours)
+        # )
+
         (
             collision_avoidance_accleration,
             collision_avoidance_neighbours,
@@ -271,7 +278,10 @@ class Boid(Entity):
 
         normalised_velocity = total_velocity / np.max([len(neighbours), 1])
 
-        return self._velocity_matching_weighting * (normalised_velocity - self.velocity)
+        return (
+            self._velocity_matching_weighting * (normalised_velocity - self.velocity),
+            neighbours,
+        )
 
     def _flock_centering_acceleration(self, swarm: Swarm) -> np.ndarray[float, float]:
         """Boids will attempt to move towards nearby flockmates
