@@ -44,7 +44,7 @@ class Grapher:
         self.savefile = savefile
         self.range = range
 
-    def generate_errorbar(self) -> None:
+    def generate_errorbar(self, colour=None, label=None) -> None:
         if self.data["simulation_parameter"]:
             collator = OrderVsParamCollator(self.data)
         else:
@@ -55,7 +55,8 @@ class Grapher:
         xs = [data_point.x for data_point in plot_data]
         ys = [data_point.y for data_point in plot_data]
         yerrs = [data_point.yerr for data_point in plot_data]
-        self.fig, self.ax = plt.subplots()
+        if self.fig is None:
+            self.fig, self.ax = plt.subplots()
         if self.range is None:
             ts = len(list(self.data.values())[0])
         else:
@@ -67,16 +68,30 @@ class Grapher:
         # self.ax.set_xscale("log")
         # self.ax.set_xlim(1, 100000)
         # self.ax.set_ylim(0, 10)
-        self.ax.errorbar(
-            xs,
-            ys,
-            yerr=yerrs,
-            errorevery=max(int(ts * 0.01), 1),
-            capsize=2,
-            elinewidth=1,
-        )
-        self.ax.set_xlabel(self.xlabel, rotation=0)
-        self.ax.set_ylabel(self.ylabel, rotation=0)
+        if colour is None:
+            self.ax.errorbar(
+                xs,
+                ys,
+                yerr=yerrs,
+                errorevery=max(int(ts * 0.01), 1),
+                capsize=2,
+                elinewidth=1,
+            )
+        else:
+            self.ax.errorbar(
+                xs,
+                ys,
+                yerr=yerrs,
+                errorevery=max(int(ts * 0.01), 1),
+                capsize=2,
+                elinewidth=1,
+                c=colour,
+                label=label,
+            )
+        # self.ax.set_xlabel(self.xlabel, rotation=0)
+        # self.ax.set_ylabel(self.ylabel, rotation=0)
+        self.ax.set_xlabel(self.xlabel)
+        self.ax.set_ylabel(self.ylabel)
 
     def generate_3d_contour(self, simulation_parameters) -> None:
         collator = OrderVsParamCollator(self.data)
@@ -102,8 +117,8 @@ class Grapher:
             vmin=np.min(zs),
             vmax=np.max(zs),
             ax=self.ax,
-            # cmap="binary",
-            cmap="pink_r",
+            cmap="binary",
+            # cmap="pink_r",
             # cmap="Oranges_r",
             # cmap="Purples",
             # cmap="Greens",
@@ -144,3 +159,6 @@ class Grapher:
 
     def show(self):
         plt.show()
+
+    def legend(self):
+        plt.legend()
