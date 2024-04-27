@@ -36,8 +36,27 @@ def plot(args):
         grapher = Grapher(
             data, args.xlabel, args.ylabel, args.zlabel, args.savefile, args.range
         )
-        grapher.generate_errorbar()
+        if args.colours is not None:
+            grapher.generate_errorbar(args.colours[0], args.labels[0])
+        else:
+            grapher.generate_errorbar()
+        if args.extrafiles is not None:
+            for i in range(len(args.extrafiles)):
+                extra_file = args.extrafiles[i]
+                if args.folder is None:
+                    with open(f"./data/{extra_file}", "r") as f:
+                        data = json.load(f)
+                else:
+                    with open(f"./data/{args.folder}/{extra_file}", "r") as f:
+                        data = json.load(f)
+                grapher.data = data
+                if args.colours is not None:
+                    grapher.generate_errorbar(args.colours[i + 1], args.labels[i + 1])
+                else:
+                    grapher.generate_errorbar()
     if args.display:
+        if args.labels is not None:
+            grapher.legend()
         grapher.show()
     if args.save:
         grapher.save()
@@ -55,13 +74,26 @@ if __name__ == "__main__":
     parser.add_argument("-x", "--xlabel")
     parser.add_argument("-y", "--ylabel")
     parser.add_argument("-z", "--zlabel")
-    parser.add_argument("-af", "--additionalfiles", nargs="*")
+    parser.add_argument(
+        "-af",
+        "--additionalfiles",
+        nargs="*",
+        help="For additional heatmap files, used in conjunction with -sps, these should match.",
+    )
     parser.add_argument("-sps", "--simulationparameters", nargs="*")
     parser.add_argument("-sf", "--savefile")
     parser.add_argument("-ml", "--multiline", action="store_true")
     parser.add_argument("-r", "--range", type=int)
     parser.add_argument("-ttg", "--timetogoal", action="store_true")
     parser.add_argument("-fo", "--folder")
+    parser.add_argument(
+        "-efs",
+        "--extrafiles",
+        nargs="*",
+        help="For drawing multiple errorbars on one plot.",
+    )
+    parser.add_argument("-cs", "--colours", nargs="*")
+    parser.add_argument("-lbs", "--labels", nargs="*")
     plot(parser.parse_args())
 
     # Example: python plot.py -f of0p0oe0to100.json -d -3d -af of0p1oe0to100.json of0p2oe0to100.json of0p3oe0to100.json of0p4oe0to100.json of0p5oe0to100.json of0p6oe0to100.json of0p7oe0to100.json of0p8oe0to100.json of0p9oe0to100.json of1p0oe0to100.json -sps 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 -y "number of entities overriden" -z "distance to goal" -x lambda -sf heatmap-magma-contour.png -s

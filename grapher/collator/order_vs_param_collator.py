@@ -89,6 +89,7 @@ class OrderVsParamCollator(DataCollator):
                     # y is the oe values
                     parameter_data = one_file_data[str(y)]
                     total_average = 0
+                    std_average = []
                     # will have n number of parameter_data runs
                     for run in parameter_data.values():
                         # We want to get the average of the last 300 runs of each of the runs
@@ -97,6 +98,7 @@ class OrderVsParamCollator(DataCollator):
                             continue
                         last_300_runs = np.array(values[-300:])
                         total_average += np.mean(last_300_runs)
+                        std_average.append(np.mean(last_300_runs))
 
                     # print(f"total average for y = {y}: {total_average}")
 
@@ -104,7 +106,8 @@ class OrderVsParamCollator(DataCollator):
                         ContourPoint(
                             float(x),
                             y,
-                            total_average / len(parameter_data),
+                            # total_average / len(parameter_data),
+                            np.std(std_average) / np.sqrt(len(std_average)),
                         )
                     )
                 except:
