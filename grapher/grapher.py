@@ -76,6 +76,7 @@ class Grapher:
                 errorevery=max(int(ts * 0.01), 1),
                 capsize=2,
                 elinewidth=1,
+                # linestyle=""
             )
         else:
             self.ax.errorbar(
