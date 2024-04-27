@@ -74,9 +74,12 @@ class Grapher:
             errorevery=max(int(ts * 0.01), 1),
             capsize=2,
             elinewidth=1,
+            linestyle=""
         )
-        self.ax.set_xlabel(self.xlabel, rotation=0)
-        self.ax.set_ylabel(self.ylabel, rotation=0)
+        # self.ax.set_xlabel(self.xlabel, rotation=0)
+        # self.ax.set_ylabel(self.ylabel, rotation=0)
+        self.ax.set_xlabel(self.xlabel)
+        self.ax.set_ylabel(self.ylabel)
 
     def generate_3d_contour(self, simulation_parameters) -> None:
         collator = OrderVsParamCollator(self.data)
