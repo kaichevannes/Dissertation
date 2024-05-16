@@ -42,10 +42,17 @@ class OrderParameter:
         Returns:
             float: a value between 0 and 1 for this order parameter
         """
+        from order_parameter.rotation import Rotation
+
         non_override_entities = []
         for entity in self.swarm.entities:
             if entity.override_fraction == 0:
                 non_override_entities.append(entity)
+
+        if isinstance(self, Rotation):
+            if len(non_override_entities) == len(self.swarm.entities):
+                return None
+
         if len(non_override_entities) > 0:
             return self.calculate(non_override_entities)
         else:
@@ -61,6 +68,7 @@ class OrderParameter:
         for entity in self.swarm.entities:
             if entity.override_fraction > 0:
                 overriden_entities.append(entity)
+
         if len(overriden_entities) > 0:
             return self.calculate(overriden_entities)
         else:

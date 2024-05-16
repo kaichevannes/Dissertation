@@ -58,7 +58,7 @@ for i in range(len(of_initial_values)):
 for i in range(10):
     # 0.1, 0.2, etc
     for j in range(101):
-        if not (j == 0 or j == 1 or j == 99 or j % 2 == 0):
+        if j == 0 or j == 1 or j == 99 or j % 2 == 0:
             continue
         if not os.path.isdir(f"of0p{i}"):
             os.mkdir(f"of0p{i}")
@@ -82,7 +82,7 @@ for i in range(10):
     new_i = i + 0.5
     formatted_new_i = f"{int(new_i * 10):02}"
     for j in range(101):
-        if not (j == 0 or j == 1 or j == 99 or j % 2 == 0):
+        if j == 0 or j == 1 or j == 99 or j % 2 == 0:
             continue
         if not os.path.isdir(f"of0p{formatted_new_i}"):
             os.mkdir(f"of0p{formatted_new_i}")
@@ -104,7 +104,7 @@ for i in range(10):
             )
 
 for j in range(101):
-    if not (j == 0 or j == 1 or j == 99 or j % 2 == 0):
+    if j == 0 or j == 1 or j == 99 or j % 2 == 0:
         continue
     if not os.path.isdir("of1p0"):
         os.mkdir("of1p0")

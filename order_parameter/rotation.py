@@ -26,10 +26,9 @@ class Rotation(OrderParameter):
         """
         if len(entities) == len(self.swarm.entities):
             return self._calculate_combined(entities)
-        elif entities[0].override_fraction > 0:
+        if entities[0].override_fraction > 0:
             return self._calculate_overriden(entities)
-        else:
-            return self._calculate_normal(entities)
+        return self._calculate_normal(entities)
 
     def _calculate_combined(self, entities) -> float:
         t = self.swarm.entities[0].time_step

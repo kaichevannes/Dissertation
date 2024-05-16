@@ -65,7 +65,7 @@ class Grapher:
             ys = ys[: self.range]
             yerrs = yerrs[: self.range]
 
-        # self.ax.set_xscale("log")
+        self.ax.set_xscale("log")
         # self.ax.set_xlim(1, 100000)
         # self.ax.set_ylim(0, 10)
         if colour is None:
